@@ -1,4 +1,5 @@
-import streamlit as st  #streamlit importieren hier 
+import streamlit as st 
+from functions.NierenCheck import calculate_gfr  #streamlit importieren hier 
 
 st.title("🩺 Interaktiver GFR-Rechner (CKD-EPI)") #Titel wird do ahzeigt
 st.write("Nieren-Check: Wie fit sind Ihre Filter?") #das isch sone untertitel und wird au in de App ahzeigt 
@@ -11,7 +12,7 @@ with col1:
     alter = st.number_input("Alter des Patienten", min_value=18, max_value=120, value=50) #do sind min und max werte damit man nid alter 500 oder so ihgeh kann, nur realistischi
 
 with col2:
-    geschlecht = st.selectbox("Geschlecht", ["Weiblich", "Männlich"])
+    geschlecht = st.selectbox("Geschlecht", ["Weiblich", "Männlich"]) #kasch uswähle was in de dropdown sött sie 
     einheit = st.radio("Einheit wählen", ["mg/dl", "µmol/l"]) #jenach labor sind die ja immer anders
 
 # Umrechnig für die einheite
