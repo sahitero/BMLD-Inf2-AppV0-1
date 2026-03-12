@@ -4,7 +4,6 @@ import pandas as pd
 # =========================================================
 # 0) APP SETTINGS  Hier sind Informationen über die Startseite des Spiels
 # =========================================================
-st.set_page_config(page_title="Lab Diagnose Game", page_icon="🧪", layout="wide")
 
 # =========================================================
 # 1)  DESIGN (CSS)  Hier sind die Designs der App aufgeführt
