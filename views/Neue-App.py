@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 # =========================================================
 # 0) APP SETTINGS  Hier sind Informationen über die Startseite des Spiels
