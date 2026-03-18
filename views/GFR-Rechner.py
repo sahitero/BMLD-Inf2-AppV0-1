@@ -1,5 +1,10 @@
 import streamlit as st 
 from functions.NierenCheck import calculate_gfr  #streamlit importieren hier 
+import pandas as pd
+
+# Initialisierung des DataFrames für die Historie
+if 'data_df' not in st.session_state:
+    st.session_state['data_df'] = pd.DataFrame(columns=['GFR'])
 
 st.title("🩺 Interaktiver GFR-Rechner (CKD-EPI)") #Titel wird do ahzeigt
 st.write("Nieren-Check: Wie fit sind Ihre Filter?") #das isch sone untertitel und wird au in de App ahzeigt 
@@ -51,3 +56,9 @@ if st.button("GFR berechnen"):
 
     # Zusatzinfo
     st.info("💡 Ein Wert unter 60 über mehr als 3 Monate deutet auf eine chronische Nierenerkrankung hin.")
+    
+      # --- NEW CODE to update history in session state and display it ---
+    st.session_state['data_df'] = pd.concat([st.session_state['data_df'], pd.DataFrame([result])])
+        
+# --- NEW CODE to display the history table ---
+st.dataframe(st.session_state['data_df'])
