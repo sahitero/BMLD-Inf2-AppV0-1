@@ -9,7 +9,7 @@ st.set_page_config(page_title="Meine App", page_icon=":material/home:")
 
 data_manager = DataManager(       # initialize data manager
     fs_protocol='webdav',         # protocol for the filesystem, use webdav for switch drive
-    fs_root_folder="BMLD_Informatik"  # folder on switch drive where the data is stored
+    fs_root_folder="bmld"  # folder on switch drive where the data is stored
     ) 
 login_manager = LoginManager(data_manager) # handles user login and registration
 login_manager.login_register()             # stops if not logged in
@@ -19,8 +19,7 @@ login_manager.login_register()             # stops if not logged in
 if 'history' not in st.session_state:
     st.session_state['history'] = data_manager.load_user_data(
         'data.csv',                     # The file on switch drive where the data is stored
-        initial_value=pd.DataFrame(),   # Initial value if the file does not exist
-        parse_dates=['timestamp']       # Parse timestamp as datetime
+        initial_value=pd.DataFrame()   # Initial value if the file does not exist
     )
 # --- END OF CODE UPDATE ---
 
