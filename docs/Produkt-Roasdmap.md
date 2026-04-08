@@ -1,0 +1,2 @@
+Hier priorisiert ihr die Funktionen eurer App und legt fest, in welcher Reihenfolge ihr diese in den kommenden Wochen programmieren wollt
+. Dabei gilt die strikte Regel: Jede neue Versionsnummer (z. B. V1.0, V2.0) darf immer nur ein neues Element hinzufügen
