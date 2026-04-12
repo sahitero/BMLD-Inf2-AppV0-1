@@ -29,8 +29,7 @@ if 'data_df' not in st.session_state:
 
 
 pg_home = st.Page("views/home.py", title="Home", icon=":material/home:", default=True)
-pg_second = st.Page("views/GFR-Rechner.py", title="GFR-Rechner", icon=":material/info:")
-pg_third = st.Page("views/Neue-App.py", title="Neue App", icon=":material/info:")
+pg_second = st.Page("views/Der Labordedektiv.py", title="Der Labordedektiv", icon=":material/info:")
 
-pg = st.navigation([pg_home, pg_second, pg_third])
+pg = st.navigation([pg_home, pg_second])
 pg.run()

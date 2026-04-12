@@ -1,13 +1,13 @@
 import streamlit as st
 
-st.title("Meine erste Streamlit App")
+st.title("Der Labordedektiv - Home")
 
 
 
-"""
+st.markdown("""
 Diese App wurde von folgenden Personen entwickelt:
-- Lilia Totila (totillil@students.zhaw.ch)
-- Eronita Sahiti (sahitero@students.zhaw.ch)
-
-Diese App ist das leere Gerüst für die App-Entwicklung im Modul Informatik 2 (BMLD/ZHAW)
-"""
+* **Eronita Sahiti** (sahitero@students.zhaw.ch)
+* **Lilia Totila** (totillil@students.zhaw.ch)
+* **Lia Bütikofer** (buetilia@students.zhaw.ch)
+* **Vanessa Cakoncev** (cakonvan@students.zhaw.ch)
+""")
