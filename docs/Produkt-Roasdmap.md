@@ -74,7 +74,7 @@ Fokus liegt auf Verständlichkeit und User Experience
 ## V4.0
 Anzeige und Interpretation der berechneten Ergebnisse/ Laborresultate für den Benutzer
 
-# Version 3
+# Version 4
 Ziel: App attraktiver und interaktiver machen
 -	Mehrere Cases erstellen
 -	Tutorial für Einsteiger (hilft bei der Erstbenutzung der App)
@@ -100,6 +100,6 @@ Persistente Speicherung der Daten über den DataManager (z. B. CSV-Dateien)
 ## V9.0
 Verbesserung der Benutzeroberfläche durch individuelles Styling und optimierte Benutzerführung
 
-4. Fazit
+3. Fazit
 Die Roadmap zeigt eine klare Entwicklung von einer grundlegenden funktionierenden App (MVP) hin zu einer benutzerfreundlichen und erweiterten Lernplattform.  
 Die Priorisierung ermöglicht eine effiziente Umsetzung der wichtigsten Funktionen und somit die Sicherstellung dass das Grundgerüst der App steht.
