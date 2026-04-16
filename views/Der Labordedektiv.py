@@ -123,7 +123,7 @@ div.stButton > button:hover {
 /* --- Laborstationen im Lab-Screen --- */
 .station-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(120px, 1fr));
+    grid-template-columns: repeat(5, minmax(500px, 1fr));
     gap: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -131,8 +131,8 @@ div.stButton > button:hover {
 .station-card {
     background: #FFE4F1;
     border-radius: 22px;
-    padding: 12px 12px;
-    box-shadow: 0px 4px 14px rgba(0,0,0,0.07);
+    padding: 12px 14px;
+    box-shadow: 0px 14px 14px rgba(0,0,0,0.07);
     border: 1px solid rgba(0,0,0,0.04);
 }
 .station-title {
@@ -391,7 +391,7 @@ microscope_info = {
     "Fall 3": {"view": "Stäbchen sichtbar.", "gram_type": "Gram-negativ"},
     "Fall 4": {"view": "Kokken in Haufen sichtbar.", "gram_type": "Gram-positiv"},
     "Fall 5": {"view": "Kein typisches Bakterienbild, evtl. parasitärer Hinweis.", "gram_type": "Nicht sinnvoll"},
-    "Fall 6": {"view": "Sprosszellen / Hyphen sichtbar.", "gram_type": "Nicht sinnvoll"},
+    "Fall 6": {"view": "Sprosszellen / Hyphen sichtbar.", "gram_type": "Farbe nicht typisch, evtl. Pilzverdacht."},
 }
 # Die Lösungen alles Fälle
 solutions = {
@@ -824,7 +824,7 @@ elif st.session_state.screen == "mikroskop":
 
     c1, c2, c3, c4 = st.columns(4)
 
-    with c1:
+    with c3:
         st.markdown("""
         <div class="gram-step-card">
             <span class="big-emoji">🟣</span>
@@ -835,7 +835,7 @@ elif st.session_state.screen == "mikroskop":
             st.session_state.gram_steps.append("Kristallviolett")
             st.rerun()
 
-    with c2:
+    with c1:
         st.markdown("""
         <div class="gram-step-card">
             <span class="big-emoji">🧴</span>
@@ -846,7 +846,7 @@ elif st.session_state.screen == "mikroskop":
             st.session_state.gram_steps.append("Lugol")
             st.rerun()
 
-    with c3:
+    with c4:
         st.markdown("""
         <div class="gram-step-card">
             <span class="big-emoji">💧</span>
@@ -857,7 +857,7 @@ elif st.session_state.screen == "mikroskop":
             st.session_state.gram_steps.append("Alkohol")
             st.rerun()
 
-    with c4:
+    with c2:
         st.markdown("""
         <div class="gram-step-card">
             <span class="big-emoji">🩷</span>
