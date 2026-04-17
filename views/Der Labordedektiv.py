@@ -340,6 +340,40 @@ micro_tests = {
     "Fall 5": {"Gram": "Nicht sinnvoll", "Katalase": "nicht sinnvoll", "Koagulase": "nicht sinnvoll", "Hämolyse": "nicht sinnvoll"},
     "Fall 6": {"Gram": "Nicht typisch / Pilzverdacht", "Katalase": "nicht primär", "Koagulase": "nicht primär", "Hämolyse": "nicht typisch"},
 }
+# beschreibt die Mikroskopischen Eindrücke pro Fall, die angezeigt werden, wenn die Spieler die Mikroskop-Station öffnen. Es enthält auch den Pfad zu einem Bild, das den mikroskopischen Eindruck visualisiert. Diese Bilder sollten in einem Ordner "images" im selben Verzeichnis wie die App liegen.
+microscope_info = {
+    "Fall 1": {
+        "view": "Grampositive Kokken in Haufen. Das spricht eher für Staphylokokken.",
+        "gram_type": "Gram-positiv",
+        "image": None
+    },
+    "Fall 2": {
+        "view": "Grampositive Kokken in Ketten. Das spricht eher für Streptokokken.",
+        "gram_type": "Gram-positiv",
+        "image": None
+    },
+    "Fall 3": {
+        "view": "Gramnegative Stäbchen sind sichtbar.",
+        "gram_type": "Gram-negativ",
+        "image": None
+    },
+    "Fall 4": {
+        "view": "Grampositive Kokken in Haufen, eher weniger aggressives Bild.",
+        "gram_type": "Gram-positiv",
+        "image": None
+    },
+    "Fall 5": {
+        "view": "Kein typisches bakterielles Bild. Andere Ursachen sollten mitgedacht werden.",
+        "gram_type": "Nicht sinnvoll",
+        "image": None
+    },
+    "Fall 6": {
+        "view": "Sprosszellen oder Hyphen, passend zu einem Pilzbefund.",
+        "gram_type": "Nicht typisch / Pilzverdacht",
+        "image": None
+    }
+}
+
 # Referenzwerte f¨r Blutprobe zur Interpretation
 REF = {
     "CRP (mg/L)": (0, 5),
