@@ -298,6 +298,9 @@ if "lab_journal" not in st.session_state:
 if "show_help" not in st.session_state:
     st.session_state.show_help = False
 
+if "gram_done" not in st.session_state:
+    st.session_state.gram_done = False
+
 # =========================================================
 # 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientanakten)
 # =========================================================
@@ -341,36 +344,43 @@ micro_tests = {
     "Fall 6": {"Gram": "Nicht typisch / Pilzverdacht", "Katalase": "nicht primär", "Koagulase": "nicht primär", "Hämolyse": "nicht typisch"},
 }
 # beschreibt die Mikroskopischen Eindrücke pro Fall, die angezeigt werden, wenn die Spieler die Mikroskop-Station öffnen. Es enthält auch den Pfad zu einem Bild, das den mikroskopischen Eindruck visualisiert. Diese Bilder sollten in einem Ordner "images" im selben Verzeichnis wie die App liegen.
+#Aufzeigen der Mikroskopischen Bildern
 microscope_info = {
     "Fall 1": {
         "view": "Grampositive Kokken in Haufen. Das spricht eher für Staphylokokken.",
         "gram_type": "Gram-positiv",
-        "image": None
+        "image": "images/fall1_mikro.png",
+        "sample": "Probe: Eiter aus einer Hautabszess-Läsion."
     },
     "Fall 2": {
         "view": "Grampositive Kokken in Ketten. Das spricht eher für Streptokokken.",
         "gram_type": "Gram-positiv",
-        "image": None
+        "image": "images/fall2_mikro.png",
+        "sample": "Probe: Rachenabstrich."
     },
     "Fall 3": {
         "view": "Gramnegative Stäbchen sind sichtbar.",
         "gram_type": "Gram-negativ",
-        "image": None
+        "image": "images/fall3_mikro.png",
+        "sample": "Probe: Mittelstrahlurin."
     },
     "Fall 4": {
-        "view": "Grampositive Kokken in Haufen, eher weniger aggressives Bild.",
-        "gram_type": "Gram-positiv",
-        "image": None
+        "view": "Auffälliges, strukturiertes Ei, passend zu einem Helminthen.",
+        "gram_type": "Nicht sinnvoll",
+        "image": "images/fall4_mikro.png",
+        "sample": "Probe: Stuhlprobe."
     },
     "Fall 5": {
-        "view": "Kein typisches bakterielles Bild. Andere Ursachen sollten mitgedacht werden.",
+        "view": "Kein typisches bakterielles Bild erkennbar.",
         "gram_type": "Nicht sinnvoll",
-        "image": None
+        "image": "images/fall5_mikro.png",
+        "sample": "Probe: Liquor."
     },
     "Fall 6": {
-        "view": "Sprosszellen oder Hyphen, passend zu einem Pilzbefund.",
+        "view": "Sprosszellen und Hyphen, vereinbar mit einem Hefepilz.",
         "gram_type": "Nicht typisch / Pilzverdacht",
-        "image": None
+        "image": "images/fall6_mikro.png",
+        "sample": "Probe: Vaginalabstrich."
     }
 }
 
@@ -611,6 +621,7 @@ elif st.session_state.screen == "lab":
             "Kultur & Tests": [],
             "Blutanalyse": []
         }
+        st.session_state.gram_done = False
         st.session_state.last_case = case
         st.session_state.feedback = None
         st.session_state.selected_plate = None
@@ -1008,6 +1019,7 @@ elif st.session_state.screen == "mikroskop":
     with col_b:
         if st.button("🔄 Reset", key=f"reset_gram_{case}"):
             reset_gram_game()
+            st.session_state.gram_done = False
             st.rerun()
 
     if len(st.session_state.gram_steps) == 4 and st.session_state.gram_result is None:
@@ -1015,8 +1027,10 @@ elif st.session_state.screen == "mikroskop":
 
         if st.session_state.gram_steps == correct_order:
             st.session_state.gram_result = microscope_info[case]["gram_type"]
+            st.session_state.gram_done = True
         else:
             st.session_state.gram_result = "Reihenfolge nicht korrekt"
+            st.session_state.gram_done = False
 
     if st.session_state.gram_result:
         if st.session_state.gram_result == "Reihenfolge nicht korrekt":
@@ -1024,14 +1038,37 @@ elif st.session_state.screen == "mikroskop":
         else:
             st.success(f"✅ Ergebnis der Gram-Färbung: {st.session_state.gram_result}")
 
+    if st.session_state.gram_done:
+        st.image(
+            microscope_info[case]["image"],
+            caption="Mikroskopischer Befund",
+            use_container_width=True
+        )
+
+        st.markdown(f"""
+        <div class="hint-card">
+        <b>🧪 {microscope_info[case]["sample"]}</b>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div class="hint-card">
+        🔬 Führe zuerst die Gram-Färbung korrekt durch, damit das Präparat sichtbar wird.
+        </div>
+        """, unsafe_allow_html=True)
+
     st.write("---")
 
     if st.button("📓 Mikroskop-Befund ins Laborjournal übernehmen", key=f"journal_micro_{case}"):
         st.session_state.lab_journal["Mikroskop"] = []
 
         if st.session_state.gram_result and st.session_state.gram_result != "Reihenfolge nicht korrekt":
-            st.session_state.lab_journal["Mikroskop"].append(f"Mikroskopischer Eindruck: {microscope_info[case]['view']}")
-            st.session_state.lab_journal["Mikroskop"].append(f"Gram-Ergebnis: {st.session_state.gram_result}")
+            st.session_state.lab_journal["Mikroskop"].append(
+                f"Mikroskopischer Eindruck: {microscope_info[case]['view']}"
+            )
+            st.session_state.lab_journal["Mikroskop"].append(
+                f"Gram-Ergebnis: {st.session_state.gram_result}"
+            )
             st.success("✅ Mikroskop-Befund wurde ins Journal übernommen!")
         else:
             st.warning("Bitte führe zuerst die Gram-Färbung korrekt durch.")
