@@ -294,6 +294,10 @@ if "lab_journal" not in st.session_state:
         "Kultur & Tests": [],
         "Blutanalyse": []
     }
+
+if "show_help" not in st.session_state:
+    st.session_state.show_help = False
+
 # =========================================================
 # 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientanakten)
 # =========================================================
@@ -649,8 +653,36 @@ elif st.session_state.screen == "lab":
                 st.warning(fb["msg"])
 
     # ---------- RIGHT ----------
+        # ---------- RIGHT ----------
     with right:
-        st.subheader("🔬 Laborstationen")
+        top1, top2 = st.columns([6, 1])
+
+        with top1:
+            st.subheader("🔬 Laborstationen")
+
+        with top2:
+            if st.button("❓", key="help_lab"):
+                st.session_state.show_help = not st.session_state.show_help
+
+        if st.session_state.show_help:
+            st.markdown("""
+            <div class="hint-card">
+            <b>🧪 So funktioniert das Spiel:</b><br><br>
+            1. Wähle einen Fall aus und lies die Patientenakte.<br>
+            2. Öffne Laborstationen und sammle Befunde.<br>
+            3. Übernimm wichtige Resultate ins Laborjournal.<br>
+            4. Nutze das Journal, um die wahrscheinlichste Diagnose auszuwählen.<br><br>
+
+            <b>🔬 Laborstationen:</b><br>
+            • <b>Mikroskop</b>: Morphologie und Gram-Färbung<br>
+            • <b>🧫 Kultur & Tests</b>: Agarplatten, Katalase, Koagulase, Hämolyse<br>
+            • <b>🩸 Blutanalyse</b>: Blutwerte und Differentialblutbild<br><br>
+
+            <b>🎯 Ziel:</b><br>
+            Kombiniere die Befunde richtig und finde die passende Diagnose.
+            </div>
+            """, unsafe_allow_html=True)
+
         st.write("Tippe, um Stationen freizuschalten:")
 
         cols = st.columns(3, gap="medium")
@@ -760,8 +792,6 @@ elif st.session_state.screen == "lab":
 elif st.session_state.screen == "agar":
     case = st.session_state.case
 
-    mt = micro_tests[case]
-
     st.markdown("""
     <div class="screen-box">
         <h1 style="text-align:center;">🧫 Kultur & Tests</h1>
@@ -839,7 +869,7 @@ elif st.session_state.screen == "agar":
         for h in interpret_micro(mt):
             st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
 
-            st.write("---")
+        st.write("---")
 
         if st.button("📓 Befunde ins Laborjournal übernehmen", key=f"journal_agar_{case}"):
             mt = micro_tests[case]
@@ -851,6 +881,7 @@ elif st.session_state.screen == "agar":
             st.session_state.lab_journal["Kultur & Tests"].append(f"Hämolyse: {mt['Hämolyse']}")
 
             st.success("✅ Kultur & Tests wurden ins Journal übernommen!")
+
     else:
         st.markdown("""
         <div class="hint-card">
