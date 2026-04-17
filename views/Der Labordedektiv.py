@@ -222,6 +222,34 @@ div.stButton > button:hover {
     margin-bottom: 14px;
     color: #4B0082 !important;
 }
+            
+/* --- Laborjournal --- */
+.journal-card {
+    background: #FFF8DC;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.08);
+    border: 2px dashed #E6CFA7;
+    margin-bottom: 14px;
+}
+.journal-title {
+    font-weight: 900;
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: #4B0082 !important;
+}
+.journal-section {
+    font-weight: 800;
+    margin-top: 10px;
+    margin-bottom: 6px;
+    color: #4B0082 !important;
+}
+.journal-entry {
+    margin-left: 10px;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #5A2D82 !important;
+}            
 </style>
 """, unsafe_allow_html=True)
 
@@ -260,7 +288,12 @@ if "gram_result" not in st.session_state:
 
 if "selected_blood_param" not in st.session_state:
     st.session_state.selected_blood_param = None
-
+if "lab_journal" not in st.session_state:
+    st.session_state.lab_journal = {
+        "Mikroskop": [],
+        "Kultur & Tests": [],
+        "Blutanalyse": []
+    }
 # =========================================================
 # 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientanakten)
 # =========================================================
@@ -381,13 +414,13 @@ agar_results = {
 }
 
 # Mikroskopischer Eindruck + Gram-Ziel pro Fall
-microscope_info = {
-    "Fall 1": {"view": "Kokken in Haufen sichtbar.", "gram_type": "Gram-positiv"},
-    "Fall 2": {"view": "Kokken in Ketten sichtbar.", "gram_type": "Gram-positiv"},
-    "Fall 3": {"view": "Stäbchen sichtbar.", "gram_type": "Gram-negativ"},
-    "Fall 4": {"view": "Kokken in Haufen sichtbar.", "gram_type": "Gram-positiv"},
-    "Fall 5": {"view": "Kein typisches Bakterienbild, evtl. parasitärer Hinweis.", "gram_type": "Nicht sinnvoll"},
-    "Fall 6": {"view": "Sprosszellen / Hyphen sichtbar.", "gram_type": "Farbe nicht typisch, evtl. Pilzverdacht."},
+gram_data = {
+    "Fall 1": "Gram-positiv, Kokken in Haufen",
+    "Fall 2": "Gram-negativ, Stäbchen",
+    "Fall 3": "Gram-positiv, Ketten",
+    "Fall 4": "kein Bakterium sichtbar",
+    "Fall 5": "Gram-positiv, Kokken",
+    "Fall 6": "Pilzstrukturen sichtbar"
 }
 # Die Lösungen alles Fälle
 solutions = {
@@ -535,6 +568,11 @@ elif st.session_state.screen == "lab":
             "Kultur & Tests": False,
             "Blutanalyse": False
         }
+        st.session_state.lab_journal = {
+            "Mikroskop": [],
+            "Kultur & Tests": [],
+            "Blutanalyse": []
+        }
         st.session_state.last_case = case
         st.session_state.feedback = None
         st.session_state.selected_plate = None
@@ -581,7 +619,7 @@ elif st.session_state.screen == "lab":
             submitted = st.form_submit_button("✅ Diagnose abgeben")
 
         if submitted:
-            if diagnosis == "— Wähle aus —":
+            if diagnosis == "— bitte wählen —":
                 st.session_state.feedback = {
                     "type": "warning",
                     "msg": "Bitte zuerst eine Diagnose auswählen 🙂"
@@ -612,13 +650,13 @@ elif st.session_state.screen == "lab":
 
     # ---------- RIGHT ----------
     with right:
-            st.subheader("🔬 Laborstationen")
-            st.write("Tippe, um Stationen freizuschalten:")
+        st.subheader("🔬 Laborstationen")
+        st.write("Tippe, um Stationen freizuschalten:")
 
-            cols = st.columns(3, gap="medium")
+        cols = st.columns(3, gap="medium")
 
-            with cols[0]:
-             st.markdown(f"""
+        with cols[0]:
+            st.markdown(f"""
             <div class="station-wrap">
                 <div class="station-card">
                     <div>
@@ -640,8 +678,8 @@ elif st.session_state.screen == "lab":
                 reset_gram_game()
                 st.rerun()
 
-            with cols[1]:
-                st.markdown(f"""
+        with cols[1]:
+            st.markdown(f"""
             <div class="station-wrap">
                 <div class="station-card">
                     <div>
@@ -663,8 +701,8 @@ elif st.session_state.screen == "lab":
                 st.session_state.selected_plate = None
                 st.rerun()
 
-            with cols[2]:
-                st.markdown(f"""
+        with cols[2]:
+            st.markdown(f"""
             <div class="station-wrap">
                 <div class="station-card">
                     <div>
@@ -686,87 +724,48 @@ elif st.session_state.screen == "lab":
                 st.session_state.selected_blood_param = None
                 st.rerun()
 
-            st.write("---")
-            st.subheader("📌 Ergebnisse / Hinweise")
+        st.write("---")
+        st.subheader("📓 Laborjournal")
 
-            if not any(st.session_state.unlocked.values()):
-                st.markdown("""
+        journal = st.session_state.lab_journal
+
+        journal_html = """
+        <div class="journal-card">
+            <div class="journal-title">📓 Mein Laborheft</div>
+        """
+
+        if any(journal.values()):
+            for section, entries in journal.items():
+                if entries:
+                    journal_html += f'<div class="journal-section">{section}</div>'
+                    for entry in entries:
+                        journal_html += f'<div class="journal-entry">• {entry}</div>'
+        else:
+            journal_html += '<div class="journal-entry">Noch keine Einträge vorhanden.</div>'
+
+        journal_html += "</div>"
+
+        st.markdown(journal_html, unsafe_allow_html=True)
+
+        if not any(st.session_state.unlocked.values()):
+            st.markdown("""
             <div class="hint-card">
             Noch keine Station gewählt. Tippe auf eine Station oben.
             </div>
             """, unsafe_allow_html=True)
 
-            if st.session_state.unlocked["Mikroskop"]:
-                st.markdown(
-                f"""<div class="result-card">🔬 {lab_info[case]["Mikroskop"]}</div>""",
-                unsafe_allow_html=True
-            )
-
-            if st.session_state.unlocked["Kultur & Tests"]:
-                st.markdown(
-                f"""<div class="result-card">🧫 {lab_info[case]["Agarplatte"]}</div>""",
-                unsafe_allow_html=True
-            )
-
-            mt = micro_tests[case]
-            st.markdown(f"""
-            <div class="result-card"><b>🧬 Mikrobiologie – Schnelltests</b><br>
-            Gram: <b>{mt["Gram"]}</b><br>
-            Katalase: <b>{mt["Katalase"]}</b><br>
-            Koagulase: <b>{mt["Koagulase"]}</b><br>
-            Hämolyse: <b>{mt["Hämolyse"]}</b>
-            </div>
-            """, unsafe_allow_html=True)
-
-            if st.session_state.unlocked["Blutanalyse"]:
-                st.markdown(
-                f"""<div class="result-card"><b>🧪 Blutprobe – Laborbefund</b><br>{lab_info[case]["Blutprobe"]}</div>""",
-                unsafe_allow_html=True
-            )
-
-            values = blood_values[case]
-            for param, val in values.items():
-                if param in REF:
-                    low, high = REF[param]
-                    f = flag(val, low, high)
-                    st.markdown(
-                        f"""<div class="result-card">{param}: <b>{val}</b> (Ref: {low}–{high}) <b>{f}</b></div>""",
-                        unsafe_allow_html=True
-                    )
-                else:
-                    st.markdown(
-                        f"""<div class="result-card">{param}: <b>{val}</b></div>""",
-                        unsafe_allow_html=True
-                    )
-
-            diff = blood_diff[case]
-            st.markdown("""<div class="result-card"><b>🩸 Differentialblutbild</b></div>""", unsafe_allow_html=True)
-            for param, val in diff.items():
-                st.markdown(
-                    f"""<div class="result-card">{param}: <b>{val}</b></div>""",
-                    unsafe_allow_html=True
-                )
-
-            st.write("---")
-            st.subheader("🧾 Interpretation (Auto-Hinweise)")
-
-            if st.session_state.unlocked.get("Blutanalyse"):
-                for h in interpret_blood(blood_diff[case]):
-                    st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
-
-            if st.session_state.unlocked.get("Kultur & Tests"):
-                for h in interpret_micro(micro_tests[case]):
-                    st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
 # -------------------------
 # AGAR SCREEN leitet die Agarplatte, hier können die Spieler zwischen den verschiedenen Platten wechseln (COS / MAC / CNA) und die Ergebnisse sehen, die ihnen bei der Diagnose helfen können. Es gibt auch einen Zurück-Button, um zurück zum Labor zu gelangen.
 # -------------------------
 elif st.session_state.screen == "agar":
     case = st.session_state.case
 
+    mt = micro_tests[case]
+
     st.markdown("""
     <div class="screen-box">
-        <h1 style="text-align:center;">🧫 Agarplatten</h1>
-        <p style="text-align:center;">Wähle eine Platte aus und beurteile das Wachstum.</p>
+        <h1 style="text-align:center;">🧫 Kultur & Tests</h1>
+        <p style="text-align:center;">Wähle eine Agarplatte aus und kombiniere das Wachstum mit den mikrobiologischen Schnelltests.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -780,8 +779,10 @@ elif st.session_state.screen == "agar":
     </div>
     """, unsafe_allow_html=True)
 
+    st.subheader("1️⃣ Agarplatte auswählen")
+
     col1, col2, col3 = st.columns(3)
-# hier werden die drei Platten als Karten dargestellt, die den Namen der Platte und ein Symbol anzeigen. Wenn die Spieler auf "COS öffnen", "MAC öffnen" oder "CNA öffnen" klicken, wird die entsprechende Platte ausgewählt und die Seite aktualisiert, um die Ergebnisse für diese Platte anzuzeigen.
+
     with col1:
         st.markdown("""
         <div class="plate-card">🧫</div>
@@ -809,14 +810,51 @@ elif st.session_state.screen == "agar":
             st.session_state.selected_plate = "CNA"
             st.rerun()
 
+    st.write("")
+
     if st.session_state.selected_plate:
         plate = st.session_state.selected_plate
         result = agar_results[case][plate]
+        mt = micro_tests[case]
 
+        st.subheader("2️⃣ Wachstum auf der ausgewählten Platte")
         st.markdown(f"""
         <div class="result-card">
         <h4>🔍 Ausgewählte Platte: {plate}</h4>
         {result}
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.subheader("3️⃣ Mikrobiologische Schnelltests")
+        st.markdown(f"""
+        <div class="result-card">
+        <b>Gram:</b> {mt["Gram"]}<br>
+        <b>Katalase:</b> {mt["Katalase"]}<br>
+        <b>Koagulase:</b> {mt["Koagulase"]}<br>
+        <b>Hämolyse:</b> {mt["Hämolyse"]}
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.subheader("4️⃣ Interpretation")
+        for h in interpret_micro(mt):
+            st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
+
+            st.write("---")
+
+        if st.button("📓 Befunde ins Laborjournal übernehmen", key=f"journal_agar_{case}"):
+            mt = micro_tests[case]
+
+            st.session_state.lab_journal["Kultur & Tests"] = []
+            st.session_state.lab_journal["Kultur & Tests"].append(f"Gram: {mt['Gram']}")
+            st.session_state.lab_journal["Kultur & Tests"].append(f"Katalase: {mt['Katalase']}")
+            st.session_state.lab_journal["Kultur & Tests"].append(f"Koagulase: {mt['Koagulase']}")
+            st.session_state.lab_journal["Kultur & Tests"].append(f"Hämolyse: {mt['Hämolyse']}")
+
+            st.success("✅ Kultur & Tests wurden ins Journal übernommen!")
+    else:
+        st.markdown("""
+        <div class="hint-card">
+        Wähle zuerst eine Platte aus, damit Wachstum, Schnelltests und Interpretation angezeigt werden.
         </div>
         """, unsafe_allow_html=True)
 # -------------------------
@@ -921,17 +959,29 @@ elif st.session_state.screen == "mikroskop":
         else:
             st.success(f"✅ Ergebnis der Gram-Färbung: {st.session_state.gram_result}")
 
+    st.write("---")
+
+    if st.button("📓 Mikroskop-Befund ins Laborjournal übernehmen", key=f"journal_micro_{case}"):
+        st.session_state.lab_journal["Mikroskop"] = []
+
+        if st.session_state.gram_result and st.session_state.gram_result != "Reihenfolge nicht korrekt":
+            st.session_state.lab_journal["Mikroskop"].append(f"Mikroskopischer Eindruck: {microscope_info[case]['view']}")
+            st.session_state.lab_journal["Mikroskop"].append(f"Gram-Ergebnis: {st.session_state.gram_result}")
+            st.success("✅ Mikroskop-Befund wurde ins Journal übernommen!")
+        else:
+            st.warning("Bitte führe zuerst die Gram-Färbung korrekt durch.")
 # -------------------------
 # BLUTBILD SCREEN
 # -------------------------
 elif st.session_state.screen == "blutbild":
     case = st.session_state.case
+    values = blood_values[case]
     diff = blood_diff[case]
 
     st.markdown("""
     <div class="screen-box">
-        <h1 style="text-align:center;">🩸 Blutbild</h1>
-        <p style="text-align:center;">Wähle einen Blutbild-Parameter aus und beurteile ihn.</p>
+        <h1 style="text-align:center;">🩸 Blutanalyse</h1>
+        <p style="text-align:center;">Beurteile die Blutwerte und das Differentialblutbild und übernimm die wichtigsten Befunde ins Laborjournal.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -941,84 +991,62 @@ elif st.session_state.screen == "blutbild":
 
     st.markdown("""
     <div class="path-card">
-    🧪 <b>Hinweis:</b> Nicht nur der Wert selbst ist wichtig, sondern auch seine Bedeutung für die Diagnose.
+    🧪 <b>Hinweis:</b> Achte auf erhöhte Entzündungswerte und auf Veränderungen im Differentialblutbild.
     </div>
     """, unsafe_allow_html=True)
 
-    c1, c2, c3, c4 = st.columns(4)
+    st.subheader("🧪 Blutwerte")
 
-    params = [
-        "Leukozyten (G/L)",
-        "Neutrophile (%)",
-        "Lymphozyten (%)",
-        "Eosinophile (%)"
-    ]
-
-    with c1:
-        st.markdown("""
-        <div class="gram-step-card">
-            <span class="big-emoji">🧫</span>
-            <div class="gram-step-title">Leukozyten</div>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("Ansehen", key=f"blood_leuk_{case}"):
-            st.session_state.selected_blood_param = "Leukozyten (G/L)"
-            st.rerun()
-
-    with c2:
-        st.markdown("""
-        <div class="gram-step-card">
-            <span class="big-emoji">🛡️</span>
-            <div class="gram-step-title">Neutrophile</div>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("Ansehen", key=f"blood_neut_{case}"):
-            st.session_state.selected_blood_param = "Neutrophile (%)"
-            st.rerun()
-
-    with c3:
-        st.markdown("""
-        <div class="gram-step-card">
-            <span class="big-emoji">🦠</span>
-            <div class="gram-step-title">Lymphozyten</div>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("Ansehen", key=f"blood_lymph_{case}"):
-            st.session_state.selected_blood_param = "Lymphozyten (%)"
-            st.rerun()
-
-    with c4:
-        st.markdown("""
-        <div class="gram-step-card">
-            <span class="big-emoji">🐛</span>
-            <div class="gram-step-title">Eosinophile</div>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("Ansehen", key=f"blood_eos_{case}"):
-            st.session_state.selected_blood_param = "Eosinophile (%)"
-            st.rerun()
+    for param, val in values.items():
+        if param in REF:
+            low, high = REF[param]
+            flag_symbol = flag(val, low, high)
+            st.markdown(f"""
+            <div class="result-card">
+            {param}: <b>{val}</b> (Ref: {low}–{high}) <b>{flag_symbol}</b>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div class="result-card">
+            {param}: <b>{val}</b>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.write("")
+    st.subheader("🩸 Differentialblutbild")
 
-    if st.session_state.selected_blood_param:
-        param = st.session_state.selected_blood_param
-        value = diff[param]
-        explanation = blood_explanations[param]
-        low, high = REF_BLOOD_DIFF[param]
-        flag_symbol = flag(value, low, high)
-
-        st.markdown(f"""
-        <div class="result-card">
-        <h4>🔍 Ausgewählter Wert: {param}</h4>
-        <b>Wert:</b> {value} <br>
-        <b>Referenzbereich:</b> {low} – {high} <br>
-        <b>Bewertung:</b> {flag_symbol}
-        {explanation}
-        </div>
-        """, unsafe_allow_html=True)
+    for param, val in diff.items():
+        if param in REF_BLOOD_DIFF:
+            low, high = REF_BLOOD_DIFF[param]
+            flag_symbol = flag(val, low, high)
+            st.markdown(f"""
+            <div class="result-card">
+            {param}: <b>{val}</b> (Ref: {low}–{high}) <b>{flag_symbol}</b>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div class="result-card">
+            {param}: <b>{val}</b>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.write("---")
     st.subheader("🧾 Interpretation")
 
     for h in interpret_blood(diff):
         st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
+
+    st.write("---")
+
+    if st.button("📓 Ins Laborjournal übernehmen", key=f"journal_blood_{case}"):
+        st.session_state.lab_journal["Blutanalyse"] = []
+
+        for param, val in values.items():
+            st.session_state.lab_journal["Blutanalyse"].append(f"{param}: {val}")
+
+        for param, val in diff.items():
+            st.session_state.lab_journal["Blutanalyse"].append(f"{param}: {val}")
+
+        st.success("✅ Blutanalyse wurde ins Laborjournal übernommen!")
