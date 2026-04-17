@@ -6,23 +6,18 @@ import pandas as pd
 # =========================================================
 
 # =========================================================
-# 1)  DESIGN (CSS)  Hier sind die Designs der App aufgeführt
-# =========================================================
-# =========================================================
-# 1) DESIGN (CSS) - KORRIGIERT FÜR BESSERE LESBARKEIT
+# 1) DESIGN (CSS)  Hier sind die Designs der App aufgeführt
 # =========================================================
 st.markdown("""
 <style>
 /* --- App Hintergrund --- */
-/* Wir setzen ein etwas kräftigeres Rosa, damit der Kontrast besser ist */
 .stApp {
-    background-color: #FFB3D1; /* Ein gesättigteres Rosa */
+    background-color: #FFB3D1;
 }
 
 /* --- Globale Textfarben --- */
-/* Wir zwingen alle h1 Titel und normalen Text auf eine dunkle Farbe */
 h1, p, span, div {
-    color: #4B0082 !important; /* Ein dunkles Indigo/Violett für besten Kontrast */
+    color: #4B0082 !important;
 }
 
 /* --- Standard Cards --- */
@@ -51,15 +46,15 @@ h1, p, span, div {
 /* --- Standard Buttons --- */
 div.stButton > button {
     background-color: #FFD6E8;
-    color: #4B0082 !important; /* Dunkler Text auf dem Button */
+    color: #4B0082 !important;
     border-radius: 22px;
     border: none;
     padding: 0.6em 1.1em;
     font-weight: 700;
 }
 div.stButton > button:hover {
-    background-color: #4B0082; /* Dunkler Hintergrund beim Drüberfahren */
-    color: white !important; /* Weißer Text beim Drüberfahren */
+    background-color: #4B0082;
+    color: white !important;
 }
 
 /* --- Sticky App Header --- */
@@ -67,7 +62,6 @@ div.stButton > button:hover {
     position: sticky;
     top: 0;
     z-index: 999;
-    /* Hintergrund des Headers leicht transparent, aber dunkel genug */
     background: rgba(255, 179, 209, 0.95);
     backdrop-filter: blur(8px);
     padding: 10px 6px 12px 6px;
@@ -105,7 +99,6 @@ div.stButton > button:hover {
     font-weight: 800;
     color: #4B0082 !important;
 }
-/* Spezifisches Styling für Buttons im Header */
 .app-header div.stButton > button {
     background-color: #FFE4F1 !important;
     color: #4B0082 !important;
@@ -121,40 +114,48 @@ div.stButton > button:hover {
 }
 
 /* --- Laborstationen im Lab-Screen --- */
-.station-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(500px, 1fr));
-    gap: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
 .station-card {
     background: #FFE4F1;
-    border-radius: 22px;
-    padding: 12px 14px;
-    box-shadow: 0px 14px 14px rgba(0,0,0,0.07);
-    border: 1px solid rgba(0,0,0,0.04);
+    border-radius: 26px;
+    padding: 20px 18px;
+    box-shadow: 0px 8px 18px rgba(0,0,0,0.08);
+    border: 1px solid rgba(75, 0, 130, 0.08);
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+}
+.station-icon {
+    font-size: 34px;
+    margin-bottom: 8px;
 }
 .station-title {
     font-weight: 900;
-    font-size: 15px;
-    margin-bottom: 6px;
+    font-size: 20px;
+    line-height: 1.2;
+    margin-bottom: 10px;
     color: #4B0082 !important;
 }
 .station-sub {
-    font-size: 12px;
-    opacity: 0.7;
-    margin-bottom: 10px;
-    color: #4B0082 !important;
+    font-size: 15px;
+    line-height: 1.65;
+    color: #6A3FA0 !important;
+    margin-bottom: 14px;
 }
 .station-badge {
     display: inline-block;
     background: #E6F7FF;
-    padding: 3px 8px;
+    padding: 7px 12px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 800;
     color: #4B0082 !important;
+    width: fit-content;
+    margin-top: auto;
+}
+.station-wrap {
+    margin-bottom: 14px;
 }
 
 /* --- Cute Agar + Mikroskop Screens --- */
@@ -224,7 +225,6 @@ div.stButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 
-
 # =========================================================
 # 2) SESSION STATE
 # =========================================================
@@ -237,31 +237,27 @@ if "score" not in st.session_state:
 if "feedback" not in st.session_state:
     st.session_state.feedback = None
 
-if "unlocked" not in st.session_state:
-    st.session_state.unlocked = {
-        "Mikroskop": False,
-        "Agarplatte": False,
-        "Blutprobe": False,
-        "Blutbild": False,
-        "Mikrotests": False
-    }
+default_unlocked = {
+    "Mikroskop": False,
+    "Kultur & Tests": False,
+    "Blutanalyse": False,
+}
 
-# Welcher Fall ist gewählt
+if "unlocked" not in st.session_state or set(st.session_state.unlocked.keys()) != set(default_unlocked.keys()):
+    st.session_state.unlocked = default_unlocked.copy()
+
 if "case" not in st.session_state:
     st.session_state.case = "Fall 1"
 
-# Welche Platte ist auf dem Agar-Screen gewählt
 if "selected_plate" not in st.session_state:
     st.session_state.selected_plate = None
 
-# Gram-Spiel: Reihenfolge + Ergebnis
 if "gram_steps" not in st.session_state:
     st.session_state.gram_steps = []
 
 if "gram_result" not in st.session_state:
     st.session_state.gram_result = None
 
-# Welcher Blutbild-Wert ist ausgewählt?
 if "selected_blood_param" not in st.session_state:
     st.session_state.selected_blood_param = None
 
@@ -534,10 +530,15 @@ elif st.session_state.screen == "lab":
 
     # reset unlocked + feedback bei Fallwechsel
     if "last_case" not in st.session_state or st.session_state.last_case != case:
-        st.session_state.unlocked = {k: False for k in st.session_state.unlocked}
+        st.session_state.unlocked = {
+            "Mikroskop": False,
+            "Kultur & Tests": False,
+            "Blutanalyse": False
+        }
         st.session_state.last_case = case
         st.session_state.feedback = None
         st.session_state.selected_plate = None
+        st.session_state.selected_blood_param = None
         reset_gram_game()
 
     # Sticky Header mit Fallname und Score + Zurück-Button
@@ -547,15 +548,15 @@ elif st.session_state.screen == "lab":
     if st.button("← Zurück", key=f"header_back_{case}"):
         st.session_state.screen = "level"
         st.rerun()
-        # damit die Spieler jederzeit zurück zur Fallauswahl können (und damit die Seite nicht überladen ist, habe ich den Zurück-Button in den Header gepackt)
+
     st.markdown(f'<div class="header-pill">🧪 {case}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="header-score">🎯 Score: {st.session_state.score}</div>', unsafe_allow_html=True)
     st.markdown('</div></div>', unsafe_allow_html=True)
 
-    left, right = st.columns([1.1, 1])
+    left, right = st.columns([0.85, 1.7], gap="large")
 
-    # ---------- LEFT ---------- der linke Bereich zeigt die Patientendaten, die Diagnoseoptionen und das Feedback an, während der rechte Bereich die Laborstationen und die Ergebnisse/Hinweise anzeigt. Je nachdem, welche Stationen freigeschaltet wurden, werden dort unterschiedliche Informationen angezeigt.
+    # ---------- LEFT ----------
     with left:
         st.markdown(f"""
         <div class="cute-card">
@@ -580,12 +581,18 @@ elif st.session_state.screen == "lab":
             submitted = st.form_submit_button("✅ Diagnose abgeben")
 
         if submitted:
-            if diagnosis == "— bitte wählen —":
-                st.session_state.feedback = {"type": "warning", "msg": "Bitte zuerst eine Diagnose auswählen 🙂"}
+            if diagnosis == "— Wähle aus —":
+                st.session_state.feedback = {
+                    "type": "warning",
+                    "msg": "Bitte zuerst eine Diagnose auswählen 🙂"
+                }
             else:
                 if diagnosis == solutions[case]:
                     st.session_state.score += 10
-                    st.session_state.feedback = {"type": "success", "msg": "✅ Richtig! +10 Punkte"}
+                    st.session_state.feedback = {
+                        "type": "success",
+                        "msg": "✅ Richtig! +10 Punkte"
+                    }
                 else:
                     st.session_state.score -= 5
                     st.session_state.feedback = {
@@ -603,134 +610,153 @@ elif st.session_state.screen == "lab":
             else:
                 st.warning(fb["msg"])
 
-    # ---------- RIGHT ---------- hier werden die Laborstationen angezeigt, die die Spieler freischalten können, um mehr Informationen über den Fall zu erhalten. Je nachdem, welche Stationen freigeschaltet wurden, werden dort unterschiedliche Informationen angezeigt. Es gibt auch einen Bereich für Ergebnisse/Hinweise, der sich dynamisch anpasst.
+    # ---------- RIGHT ----------
     with right:
-        st.subheader("🔬 Laborstationen")
-        st.write("Tippe, um Stationen freizuschalten:")
+            st.subheader("🔬 Laborstationen")
+            st.write("Tippe, um Stationen freizuschalten:")
 
-        cols = st.columns(5)
-# hier werden die Stationen als Karten dargestellt, die den Namen der Station, eine kurze Beschreibung und einen Status (unlocked/locked) anzeigen. Wenn die Spieler auf "Öffnen" klicken, wird die entsprechende Station freigeschaltet und die Seite aktualisiert, um die neuen Informationen anzuzeigen.
-        with cols[0]:
-            st.markdown(f"""
-            <div class="station-card">
-                <div class="station-title">🔬 Mikroskop</div>
-                <div class="station-sub">Gram / Morphologie</div>
-                <div class="station-badge">{'✅ unlocked' if st.session_state.unlocked['Mikroskop'] else '🔒 locked'}</div>
+            cols = st.columns(3, gap="medium")
+
+            with cols[0]:
+             st.markdown(f"""
+            <div class="station-wrap">
+                <div class="station-card">
+                    <div>
+                        <div class="station-icon">🔬</div>
+                        <div class="station-title">Mikroskop</div>
+                        <div class="station-sub">
+                            Gram-Färbung<br>
+                            Morphologie
+                        </div>
+                    </div>
+                    <div class="station-badge">{'✅ freigeschaltet' if st.session_state.unlocked['Mikroskop'] else '🔒 noch zu öffnen'}</div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
-            if st.button("Öffnen", key=f"open_mic_{case}"):
+
+            if st.button("Mikroskop öffnen", key=f"open_mic_{case}", use_container_width=True):
                 st.session_state.unlocked["Mikroskop"] = True
                 st.session_state.screen = "mikroskop"
                 reset_gram_game()
                 st.rerun()
-# die Agarstation könnte z.Bsp. so aussehen, dass die Spieler zwischen den verschiedenen Platten (COS / MAC / CNA) wechseln können, um die Ergebnisse zu sehen. Je nachdem, welche Platte sie auswählen, werden unterschiedliche Informationen angezeigt, die ihnen bei der Diagnose helfen können. Das könnte
-        with cols[1]:
-            st.markdown(f"""
-            <div class="station-card">
-                <div class="station-title">🧫 Agar</div>
-                <div class="station-sub">COS / MAC / CNA</div>
-                <div class="station-badge">{'✅ unlocked' if st.session_state.unlocked['Agarplatte'] else '🔒 locked'}</div>
+
+            with cols[1]:
+                st.markdown(f"""
+            <div class="station-wrap">
+                <div class="station-card">
+                    <div>
+                        <div class="station-icon">🧫</div>
+                        <div class="station-title">Kultur & Tests</div>
+                        <div class="station-sub">
+                            Agarplatten<br>
+                            Katalase / Koagulase
+                        </div>
+                    </div>
+                    <div class="station-badge">{'✅ freigeschaltet' if st.session_state.unlocked['Kultur & Tests'] else '🔒 noch zu öffnen'}</div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
-            if st.button("Öffnen", key=f"open_agar_{case}"):
-                st.session_state.unlocked["Agarplatte"] = True
+
+            if st.button("Kultur & Tests öffnen", key=f"open_kultur_{case}", use_container_width=True):
+                st.session_state.unlocked["Kultur & Tests"] = True
                 st.session_state.screen = "agar"
                 st.session_state.selected_plate = None
                 st.rerun()
 
-        with cols[2]:
-            st.markdown(f"""
-            <div class="station-card">
-                <div class="station-title">🧪 Blutprobe</div>
-                <div class="station-sub">CRP / PCT / etc.</div>
-                <div class="station-badge">{'✅ unlocked' if st.session_state.unlocked['Blutprobe'] else '🔒 locked'}</div>
+            with cols[2]:
+                st.markdown(f"""
+            <div class="station-wrap">
+                <div class="station-card">
+                    <div>
+                        <div class="station-icon">🩸</div>
+                        <div class="station-title">Blutanalyse</div>
+                        <div class="station-sub">
+                            CRP / PCT / Leukos<br>
+                            Diff-BB / Interpretation
+                        </div>
+                    </div>
+                    <div class="station-badge">{'✅ freigeschaltet' if st.session_state.unlocked['Blutanalyse'] else '🔒 noch zu öffnen'}</div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
-            if st.button("Öffnen", key=f"open_blood_{case}"):
-                st.session_state.unlocked["Blutprobe"] = True
-                st.rerun()
 
-        with cols[3]:
-            st.markdown(f"""
-            <div class="station-card">
-                <div class="station-title">🩸 Blutbild</div>
-                <div class="station-sub">Diff-BB</div>
-                <div class="station-badge">{'✅ unlocked' if st.session_state.unlocked['Blutbild'] else '🔒 locked'}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Öffnen", key=f"open_bb_{case}"):
-                st.session_state.unlocked["Blutbild"] = True
+            if st.button("Blutanalyse öffnen", key=f"open_blut_{case}", use_container_width=True):
+                st.session_state.unlocked["Blutanalyse"] = True
                 st.session_state.screen = "blutbild"
                 st.session_state.selected_blood_param = None
                 st.rerun()
 
-        with cols[4]:
-            st.markdown(f"""
-            <div class="station-card">
-                <div class="station-title">🧬 Mikrotests</div>
-                <div class="station-sub">Katalase / Koagulase</div>
-                <div class="station-badge">{'✅ unlocked' if st.session_state.unlocked['Mikrotests'] else '🔒 locked'}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Öffnen", key=f"open_mt_{case}"):
-                st.session_state.unlocked["Mikrotests"] = True
-                st.rerun()
+            st.write("---")
+            st.subheader("📌 Ergebnisse / Hinweise")
 
-        st.write("---")
-        st.subheader("📌 Ergebnisse / Hinweise")
-
-        if not any(st.session_state.unlocked.values()):
-            st.markdown("""
+            if not any(st.session_state.unlocked.values()):
+                st.markdown("""
             <div class="hint-card">
             Noch keine Station gewählt. Tippe auf eine Station oben.
             </div>
             """, unsafe_allow_html=True)
 
-        if st.session_state.unlocked["Mikroskop"]:
-            st.markdown(f"""<div class="result-card">🔬 {lab_info[case]["Mikroskop"]}</div>""", unsafe_allow_html=True)
+            if st.session_state.unlocked["Mikroskop"]:
+                st.markdown(
+                f"""<div class="result-card">🔬 {lab_info[case]["Mikroskop"]}</div>""",
+                unsafe_allow_html=True
+            )
 
-        if st.session_state.unlocked["Agarplatte"]:
-            st.markdown(f"""<div class="result-card">🧫 {lab_info[case]["Agarplatte"]}</div>""", unsafe_allow_html=True)
+            if st.session_state.unlocked["Kultur & Tests"]:
+                st.markdown(
+                f"""<div class="result-card">🧫 {lab_info[case]["Agarplatte"]}</div>""",
+                unsafe_allow_html=True
+            )
 
-        if st.session_state.unlocked["Blutprobe"]:
-            st.markdown(f"""<div class="result-card"><b>🧪 Blutprobe – Laborbefund</b><br>{lab_info[case]["Blutprobe"]}</div>""",
-                        unsafe_allow_html=True)
+            mt = micro_tests[case]
+            st.markdown(f"""
+            <div class="result-card"><b>🧬 Mikrobiologie – Schnelltests</b><br>
+            Gram: <b>{mt["Gram"]}</b><br>
+            Katalase: <b>{mt["Katalase"]}</b><br>
+            Koagulase: <b>{mt["Koagulase"]}</b><br>
+            Hämolyse: <b>{mt["Hämolyse"]}</b>
+            </div>
+            """, unsafe_allow_html=True)
+
+            if st.session_state.unlocked["Blutanalyse"]:
+                st.markdown(
+                f"""<div class="result-card"><b>🧪 Blutprobe – Laborbefund</b><br>{lab_info[case]["Blutprobe"]}</div>""",
+                unsafe_allow_html=True
+            )
+
             values = blood_values[case]
             for param, val in values.items():
                 if param in REF:
                     low, high = REF[param]
                     f = flag(val, low, high)
-                    st.markdown(f"""<div class="result-card">{param}: <b>{val}</b> (Ref: {low}–{high}) <b>{f}</b></div>""",
-                                unsafe_allow_html=True)
+                    st.markdown(
+                        f"""<div class="result-card">{param}: <b>{val}</b> (Ref: {low}–{high}) <b>{f}</b></div>""",
+                        unsafe_allow_html=True
+                    )
                 else:
-                    st.markdown(f"""<div class="result-card">{param}: <b>{val}</b></div>""", unsafe_allow_html=True)
+                    st.markdown(
+                        f"""<div class="result-card">{param}: <b>{val}</b></div>""",
+                        unsafe_allow_html=True
+                    )
 
-        if st.session_state.unlocked["Blutbild"]:
-            st.markdown("""<div class="result-card"><b>🩸 Differentialblutbild</b></div>""", unsafe_allow_html=True)
             diff = blood_diff[case]
+            st.markdown("""<div class="result-card"><b>🩸 Differentialblutbild</b></div>""", unsafe_allow_html=True)
             for param, val in diff.items():
-                st.markdown(f"""<div class="result-card">{param}: <b>{val}</b></div>""", unsafe_allow_html=True)
+                st.markdown(
+                    f"""<div class="result-card">{param}: <b>{val}</b></div>""",
+                    unsafe_allow_html=True
+                )
 
-        if st.session_state.unlocked["Mikrotests"]:
-            mt = micro_tests[case]
-            st.markdown(f"""<div class="result-card"><b>🧬 Mikrobiologie – Schnelltests</b><br>
-            Gram: <b>{mt["Gram"]}</b><br>
-            Katalase: <b>{mt["Katalase"]}</b><br>
-            Koagulase: <b>{mt["Koagulase"]}</b><br>
-            Hämolyse: <b>{mt["Hämolyse"]}</b>
-            </div>""", unsafe_allow_html=True)
+            st.write("---")
+            st.subheader("🧾 Interpretation (Auto-Hinweise)")
 
-        st.write("---")
-        st.subheader("🧾 Interpretation (Auto-Hinweise)")
+            if st.session_state.unlocked.get("Blutanalyse"):
+                for h in interpret_blood(blood_diff[case]):
+                    st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
 
-        if st.session_state.unlocked.get("Blutbild"):
-            for h in interpret_blood(blood_diff[case]):
-                st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
-
-        if st.session_state.unlocked.get("Mikrotests"):
-            for h in interpret_micro(micro_tests[case]):
-                st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
-
+            if st.session_state.unlocked.get("Kultur & Tests"):
+                for h in interpret_micro(micro_tests[case]):
+                    st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
 # -------------------------
 # AGAR SCREEN leitet die Agarplatte, hier können die Spieler zwischen den verschiedenen Platten wechseln (COS / MAC / CNA) und die Ergebnisse sehen, die ihnen bei der Diagnose helfen können. Es gibt auch einen Zurück-Button, um zurück zum Labor zu gelangen.
 # -------------------------
@@ -793,7 +819,6 @@ elif st.session_state.screen == "agar":
         {result}
         </div>
         """, unsafe_allow_html=True)
-
 # -------------------------
 # MIKROSKOP SCREEN hier können die Spieler den mikroskopischen Eindruck der Probe sehen und danach die Gram-Färbung durchführen, indem sie die Schritte in der richtigen Reihenfolge auswählen. Es gibt auch einen Zurück-Button, um zurück zum Labor zu gelangen.
 # -------------------------
