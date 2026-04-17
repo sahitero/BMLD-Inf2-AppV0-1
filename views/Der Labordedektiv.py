@@ -466,7 +466,7 @@ gram_data = {
     "Fall 1": "Gram-positiv, Kokken in Haufen",
     "Fall 2": "Gram-negativ, Stäbchen",
     "Fall 3": "Gram-positiv, Ketten",
-    "Fall 4": "kein Bakterium sichtbar",
+    "Fall 4": "Keine Bakterien, aber auffällige Strukturen (Helminthen-Ei)",
     "Fall 5": "Gram-positiv, Kokken",
     "Fall 6": "Pilzstrukturen sichtbar"
 }
@@ -475,8 +475,8 @@ solutions = {
     "Fall 1": "Staphylococcus aureus",
     "Fall 2": "Streptococcus pyogenes",
     "Fall 3": "Escherichia coli",
-    "Fall 4": "Staphylococcus epidermidis",
-    "Fall 5": "Helmintheninfektion",
+    "Fall 4": "Helmintheninfektion",
+    "Fall 5": "Staphylococcus epidermidis",
     "Fall 6": "Candida spp.",
 }
 # Hier sind die Diagnoseoptionen, die in der Auswahlbox angezeigt werden. Sie sollten alle möglichen Diagnosen enthalten, damit die Spieler eine Auswahl treffen können. Einige Fälle sind als Verwirrung hier
