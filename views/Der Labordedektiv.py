@@ -1022,7 +1022,7 @@ elif st.session_state.screen == "lab":
             """, unsafe_allow_html=True)
 
 # -------------------------
-# AGAR SCREEN leitet die Agarplatte, hier können die Spieler zwischen den verschiedenen Platten wechseln (COS / MAC / CNA) und die Ergebnisse sehen, die ihnen bei der Diagnose helfen können. Es gibt auch einen Zurück-Button, um zurück zum Labor zu gelangen.
+# AGAR SCREEN
 # -------------------------
 elif st.session_state.screen == "agar":
     case = st.session_state.case
@@ -1039,15 +1039,15 @@ elif st.session_state.screen == "agar":
         st.session_state.screen = "lab"
         st.rerun()
 
-        st.markdown("""
-        <div class="path-card">
-        🧪 <b>Plattenübersicht:</b> COS = Kochblut, MAC = MacConkey, CNA = grampositive Selektion
-        </div>
-        """, unsafe_allow_html=True)
+    st.markdown("""
+    <div class="path-card">
+    🧪 <b>Plattenübersicht:</b> COS = Kochblut, MAC = MacConkey, CNA = grampositive Selektion
+    </div>
+    """, unsafe_allow_html=True)
 
-        st.subheader("1️⃣ Agarplatte auswählen")
+    st.subheader("1️⃣ Agarplatte auswählen")
 
-        col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         st.markdown("""
