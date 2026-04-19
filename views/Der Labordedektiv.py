@@ -253,6 +253,69 @@ div.stButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+.analyzer-card {
+    background: #eef5fb;
+    border-radius: 24px;
+    padding: 20px;
+    min-height: 180px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    border: 2px solid #d6e8f7;
+    margin-bottom: 12px;
+}
+
+.analyzer-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #4b0082;
+    margin-bottom: 8px;
+}
+
+.analyzer-sub {
+    font-size: 16px;
+    color: #5e2a84;
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
+.analyzer-status {
+    display: inline-block;
+    background: #f8e7f0;
+    color: #4b0082;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 8px;
+}
+
+.machine-box {
+    background: #fff8fc;
+    border: 2px dashed #e5bfd1;
+    border-radius: 22px;
+    padding: 18px;
+    margin: 12px 0 18px 0;
+    color: #5e2a84;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.analysis-step {
+    background: #f3d6e5;
+    border-radius: 18px;
+    padding: 14px 18px;
+    margin: 10px 0;
+    color: #4b0082;
+    font-weight: 600;
+}
+
+.soft-divider {
+    height: 14px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # =========================================================
 # 2) SESSION STATE
 # =========================================================
@@ -1277,71 +1340,71 @@ elif st.session_state.screen == "blutbild":
     </div>
     """, unsafe_allow_html=True)
 
+    # Schritt 1: Probe laden
     st.subheader("⚙️ Analyseablauf")
 
-    # Schritt 1: Probe laden
     if not st.session_state.blood_loaded:
         st.markdown("""
-        <div class="hint-card">
-        🧪 Lege die Blutprobe in das Analysegerät ein.
+     <div class="machine-box">
+        🧪 <b>Probenannahme:</b><br>
+        Die EDTA-Blutprobe ist eingetroffen und wartet auf die Bearbeitung im Labor.
         </div>
-        """, unsafe_allow_html=True)
+     """, unsafe_allow_html=True)
 
-        if st.button("🧪 Probe ins Analysegerät laden", key=f"load_blood_{case}"):
-            st.session_state.blood_loaded = True
-            st.rerun()
+    if st.button("🧪 Probe ins Analysegerät laden", key=f"load_blood_{case}"):
+        st.session_state.blood_loaded = True
+        st.rerun()
 
     else:
         st.markdown("""
-        <div class="hint-card">
-        ✅ Probe geladen. Wähle nun die gewünschte Analyse.
-        </div>
-        """, unsafe_allow_html=True)
+     <div class="machine-box">
+        ✅ <b>Probe geladen:</b><br>
+     Wähle jetzt, welche Analysegeräte verwendet werden sollen.
+     </div>
+     """, unsafe_allow_html=True)
 
         col1, col2 = st.columns(2)
 
-        with col1:
-            st.markdown("""
-            <div class="result-card">
-            <b>🧪 Chemie-Analyzer</b><br>
-            Misst Entzündungswerte und Basisparameter.
+    with col1:
+        st.markdown(f"""
+        <div class="analyzer-card">
+            <div class="analyzer-title">🧪 Chemie-Analyzer</div>
+            <div class="analyzer-sub">
+                Misst Entzündungsparameter und Basiswerte wie CRP, PCT und Leukozyten.
             </div>
-            """, unsafe_allow_html=True)
-
-            if not st.session_state.chem_done:
-                if st.button("▶️ Chemie-Analyse starten", key=f"start_chem_{case}"):
-                    st.session_state.chem_done = True
-                    st.rerun()
-            else:
-                st.markdown("""
-                <div class="hint-card">
-                ✅ Chemie-Analyse abgeschlossen
-                </div>
-                """, unsafe_allow_html=True)
-
-        with col2:
-            st.markdown("""
-            <div class="result-card">
-            <b>🩸 Hämatologie-Analyzer</b><br>
-            Erstellt das Differentialblutbild.
+            <div class="analyzer-status">
+                {"✅ abgeschlossen" if st.session_state.chem_done else "⏳ bereit"}
             </div>
-            """, unsafe_allow_html=True)
+        </div>
+        """, unsafe_allow_html=True)
 
-            if not st.session_state.hema_done:
-                if st.button("▶️ Hämatologie-Analyse starten", key=f"start_hema_{case}"):
-                    st.session_state.hema_done = True
-                    st.rerun()
-            else:
-                st.markdown("""
-                <div class="hint-card">
-                ✅ Hämatologie-Analyse abgeschlossen
-                </div>
-                """, unsafe_allow_html=True)
+        if not st.session_state.chem_done:
+            if st.button("▶️ Chemie-Analyse starten", key=f"start_chem_{case}", use_container_width=True):
+                st.session_state.chem_done = True
+                st.rerun()
+
+    with col2:
+        st.markdown(f"""
+        <div class="analyzer-card">
+            <div class="analyzer-title">🩸 Hämatologie-Analyzer</div>
+            <div class="analyzer-sub">
+                Erstellt das Differentialblutbild und zeigt Veränderungen der Zellpopulationen.
+            </div>
+            <div class="analyzer-status">
+                {"✅ abgeschlossen" if st.session_state.hema_done else "⏳ bereit"}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if not st.session_state.hema_done:
+            if st.button("▶️ Hämatologie-Analyse starten", key=f"start_hema_{case}", use_container_width=True):
+                st.session_state.hema_done = True
+                st.rerun()
 
     # Chemie-Werte anzeigen
     if st.session_state.chem_done:
         st.write("")
-        st.subheader("🧪 Blutwerte")
+        st.subheader("🧪 Chemie-Resultate")
 
         for param, val in values.items():
             if param in REF:
@@ -1362,7 +1425,7 @@ elif st.session_state.screen == "blutbild":
     # Hämatologie-Werte anzeigen
     if st.session_state.hema_done:
         st.write("")
-        st.subheader("🩸 Differentialblutbild")
+        st.subheader("🩸 Hämatologie-Resultate")
 
         for param, val in diff.items():
             if param in REF_BLOOD_DIFF:
@@ -1383,7 +1446,7 @@ elif st.session_state.screen == "blutbild":
     # Interpretation erst zeigen, wenn mindestens eine Analyse fertig ist
     if st.session_state.chem_done or st.session_state.hema_done:
         st.write("---")
-        st.subheader("🧾 Interpretation")
+        st.subheader("🧠 Interpretation der Blutanalyse")
 
         # Nur Diff auswerten, wenn Hämatologie fertig ist
         if st.session_state.hema_done:
@@ -1400,6 +1463,13 @@ elif st.session_state.screen == "blutbild":
                 st.markdown("""<div class="hint-card">🧠 Leukozyten erhöht → passt zu einer Entzündungsreaktion.</div>""", unsafe_allow_html=True)
 
         st.write("---")
+
+        if st.session_state.chem_done and st.session_state.hema_done:
+            st.markdown("""
+            <div class="analysis-step">
+            🌟 Beide Geräte haben die Probe erfolgreich ausgewertet. Jetzt kannst du die Befunde ins Laborjournal übernehmen.
+            </div>
+            """, unsafe_allow_html=True)
 
         if st.button("📓 Ins Laborjournal übernehmen", key=f"journal_blood_{case}"):
             eintraege = []
