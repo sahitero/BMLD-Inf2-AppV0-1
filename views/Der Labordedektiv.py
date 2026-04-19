@@ -301,6 +301,9 @@ if "show_help" not in st.session_state:
 if "gram_done" not in st.session_state:
     st.session_state.gram_done = False
 
+if "selected_plate" not in st.session_state:
+    st.session_state.selected_plate = None
+
 # =========================================================
 # 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientanakten)
 # =========================================================
@@ -886,6 +889,94 @@ elif st.session_state.screen == "agar":
             st.rerun()
 
     st.write("")
+
+    # 🧠 aktuelle Auswahl holen
+plate = st.session_state.get("selected_plate", None)
+case = st.session_state.case
+
+# 🖼️ Bilder
+plate_images = {
+    "Fall 1": {
+        "COS": "images/fall1_cos.png",
+        "MAC": "images/fallleer_mac.png",
+        "CNA": "images/fall1_cna.png"
+    },
+    "Fall 2": {
+        "COS": "images/fall2_cos.png",
+        "MAC": "images/fallleer_mac.png",
+        "CNA": "images/fall2_cna.png"
+    },
+    "Fall 3": {
+        "COS": "images/fall3_cos.png",
+        "MAC": "images/fall3_mac.png",
+        "CNA": "images/fallleer_cna.png"
+    },
+    "Fall 4": {
+        "COS": "images/fall4_cos.png",
+        "MAC": "images/fallleer_mac.png",
+        "CNA": "images/fall4_cna.png"
+    },
+    "Fall 5": {
+        "COS": "images/fall5_cos.png",
+        "MAC": "images/fallleer_mac.png",
+        "CNA": "images/fall5_cna.png"
+    },
+    "Fall 6": {
+        "COS": "images/fall6_cos.png",
+        "MAC": "images/fallleer_mac.png",
+        "CNA": "images/fallleer_cna.png"
+    }
+}
+
+# 🧾 Befunde
+plate_text = {
+    "Fall 1": {
+        "COS": "Goldene Kolonien mit β-Hämolyse",
+        "MAC": "Kein Wachstum",
+        "CNA": "Wachstum mit β-Hämolyse"
+    },
+    "Fall 2": {
+        "COS": "Kleine Kolonien mit starker β-Hämolyse",
+        "MAC": "Kein Wachstum",
+        "CNA": "Wachstum mit β-Hämolyse"
+    },
+    "Fall 3": {
+        "COS": "Graue Kolonien",
+        "MAC": "Rosa Kolonien (Laktose+)",
+        "CNA": "Kein Wachstum"
+    },
+    "Fall 4": {
+        "COS": "Kein Wachstum",
+        "MAC": "Kein Wachstum",
+        "CNA": "Kein Wachstum"
+    },
+    "Fall 5": {
+        "COS": "Weisse Kolonien ohne Hämolyse",
+        "MAC": "Kein Wachstum",
+        "CNA": "Wachstum ohne Hämolyse"
+    },
+    "Fall 6": {
+        "COS": "Cremige, weissliche Kolonien",
+        "MAC": "Kein Wachstum",
+        "CNA": "Kaum oder kein Wachstum"
+    }
+}
+
+# 🔬 ANZEIGE
+if plate is not None:
+    st.markdown("## 🧫 Wachstum auf der ausgewählten Platte")
+
+    st.markdown(f"""
+    <div class="result-box">
+        <h3>🔎 Ausgewählte Platte: {plate}</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+    image_path = plate_images[case][plate]
+    text = plate_text[case][plate]
+
+    st.image(image_path, use_container_width=True)
+    st.info(text)
 
     if st.session_state.selected_plate:
         plate = st.session_state.selected_plate
