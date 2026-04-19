@@ -10,17 +10,17 @@ import pandas as pd
 # =========================================================
 st.markdown("""
 <style>
-/* --- App Hintergrund --- */
+/* --- App Hintergrund ---  Die Hintergrundfarbe der gesamten App wird hier definiert. Es ist ein sanftes Rosa, das gut zu einem biomedizinischen Labor passt und eine freundliche Atmosphäre schafft.*/
 .stApp {
     background-color: #FFB3D1;
 }
 
-/* --- Globale Textfarben --- */
+/* --- Globale Textfarben --- Farbe des Textes in der gesamten App, damit es gut lesbar ist und zum Hintergrund passt. Ein dunkles Lila wird verwendet, um einen guten Kontrast zum rosa Hintergrund zu bieten.*/
 h1, p, span, div {
     color: #4B0082 !important;
 }
 
-/* --- Standard Cards --- */
+/* --- Standard Cards --- Design für die Patientenakte/Informationen*/
 .cute-card {
     background-color: #FFE4F1;
     padding: 20px;
@@ -28,6 +28,8 @@ h1, p, span, div {
     box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
     margin-bottom: 12px;
 }
+            
+/* Design für die Ergebnisse der Tests, z.Bsp. Mikroskopischer Eindruck, Agarplatten-Ergebnisse, Blutwerte */           
 .result-card {
     background-color: #E6F7FF;
     padding: 15px;
@@ -35,6 +37,8 @@ h1, p, span, div {
     margin-bottom: 10px;
     box-shadow: 0px 3px 10px rgba(0,0,0,0.06);
 }
+            
+/* Design für die Hinweise, die den Spielern gegeben werden, z.Bsp. Interpretation der Blutwerte oder der Mikrotests */
 .hint-card {
     background-color: #F3E8FF;
     padding: 12px 14px;
@@ -43,7 +47,7 @@ h1, p, span, div {
     box-shadow: 0px 3px 10px rgba(0,0,0,0.06);
 }
 
-/* --- Standard Buttons --- */
+/* --- Standard Buttons --- */ /* Design für die Buttons, z.Bsp. "Start", "Fall auswählen", "Tests durchführen". Es ist wichtig, dass die Buttons auffällig und einladend gestaltet sind, damit die Spieler gerne darauf klicken. Ein helles Rosa mit einem dunklen Lila Text sorgt für einen guten Kontrast und eine freundliche Atmosphäre. */
 div.stButton > button {
     background-color: #FFD6E8;
     color: #4B0082 !important;
@@ -52,12 +56,13 @@ div.stButton > button {
     padding: 0.6em 1.1em;
     font-weight: 700;
 }
+/* Hover-Effekt für die Buttons, damit sie interaktiver wirken. Wenn die Spieler mit der Maus über die Buttons fahren, ändert sich die Hintergrundfarbe zu einem dunkleren Lila und der Text wird weiß, um einen klaren visuellen Effekt zu erzielen. */
 div.stButton > button:hover {
     background-color: #4B0082;
     color: white !important;
 }
 
-/* --- Sticky App Header --- */
+/* --- Sticky App Header --- */ /* Design für den App-Header, der auf allen Screens sichtbar ist. Er enthält den aktuellen Fallnamen, den Score und einen Button, um zurück zur Fallauswahl zu gelangen. Der Header ist sticky, damit er immer sichtbar bleibt, auch wenn die Spieler nach unten scrollen. Ein halbtransparenter Hintergrund mit einem leichten Blur-Effekt sorgt dafür, dass der Header sich vom restlichen Inhalt abhebt, ohne zu dominant zu wirken. */
 .app-header {
     position: sticky;
     top: 0;
@@ -113,7 +118,7 @@ div.stButton > button:hover {
     color: white !important;
 }
 
-/* --- Laborstationen im Lab-Screen --- */
+/* --- Laborstationen im Lab-Screen --- */ /* Design für die Karten, die die verschiedenen Laborstationen repräsentieren (Mikroskop, Agarplatten, Blutanalyse). Jede Karte hat ein eigenes Farbschema, das sie von den anderen unterscheidet, aber alle Karten haben einen ähnlichen Stil mit abgerundeten Ecken, Schatten und einem klaren Layout, um die Informationen übersichtlich darzustellen. Die Karten enthalten auch einen Titel, eine kurze Beschreibung und einen Button, um die Station zu betreten. */
 .station-card {
     background: #FFE4F1;
     border-radius: 26px;
@@ -126,10 +131,14 @@ div.stButton > button:hover {
     justify-content: space-between;
     text-align: left;
 }
+            
+/* Die Icons der Stationen, die ein visuelles Element hinzufügen und die Stationen leichter erkennbar machen. Sie sollten einfach und klar gestaltet sein, damit sie auch in kleiner Größe gut erkennbar sind. Ein dunkles Lila sorgt für einen guten Kontrast zum rosa Hintergrund der Karte und macht die Icons auffällig. */
 .station-icon {
     font-size: 34px;
     margin-bottom: 8px;
 }
+            
+/* Die Titel der Stationen, die den Namen der Station enthalten. Sie sollten auffällig und einladend gestaltet sein, damit die Spieler sofort erkennen, um welche Station es sich handelt und gerne darauf klicken. Ein dunkles Lila mit einem leichten Schatten sorgt für einen guten Kontrast zum rosa Hintergrund der Karte und macht die Titel gut lesbar. */
 .station-title {
     font-weight: 900;
     font-size: 20px;
@@ -137,12 +146,16 @@ div.stButton > button:hover {
     margin-bottom: 10px;
     color: #4B0082 !important;
 }
+
+/* Die Untertitel der Stationen, die eine kurze Beschreibung der Station enthalten. Sie sollten informativ und einladend formuliert sein, damit die Spieler neugierig auf die Station werden und gerne darauf klicken.                        
 .station-sub {
     font-size: 15px;
     line-height: 1.65;
     color: #6A3FA0 !important;
     margin-bottom: 14px;
 }
+            
+ /* Die Badges, die den Status der Station anzeigen (z.B. "Freigeschaltet", "Neu", "Abgeschlossen"). Sie sollten auffällig und einladend gestaltet sein, damit die Spieler sofort erkennen, ob die Station verfügbar ist oder nicht. Ein helles Blau mit einem dunklen Lila Text sorgt für einen guten Kontrast und macht die Badges gut lesbar.           
 .station-badge {
     display: inline-block;
     background: #E6F7FF;
@@ -154,11 +167,12 @@ div.stButton > button:hover {
     width: fit-content;
     margin-top: auto;
 }
+/* Der Abstand zwischen den Stationen, damit die Karten nicht zu dicht beieinander stehen und die Spieler genug Platz haben, um die Informationen auf jeder Karte zu erfassen. Ein Abstand von 14px sorgt für eine angenehme visuelle Trennung zwischen den Stationen, ohne dass sie zu weit auseinander stehen.            
 .station-wrap {
     margin-bottom: 14px;
 }
 
-/* --- Cute Agar + Mikroskop Screens --- */
+/* --- Cute Agar + Mikroskop Screens --- */ /* Design für die Bildschirme, die angezeigt werden, wenn die Spieler eine Station betreten (z.B. Mikroskop, Agarplatten). Diese Bildschirme haben ein eigenes Farbschema und Layout, das sich von der Startseite unterscheidet, um den Spielern das Gefühl zu geben, wirklich in eine andere Umgebung einzutauchen. Die Bildschirme enthalten auch spezielle Karten für die Ergebnisse der Tests, die den Spielern helfen, die Informationen zu verstehen und zu interpretieren.
 .screen-box {
     background-color: #FFF0F7;
     border-radius: 28px;
@@ -223,7 +237,7 @@ div.stButton > button:hover {
     color: #4B0082 !important;
 }
             
-/* --- Laborjournal --- */
+/* --- Laborjournal --- */ /* Design für die Einträge im Laborjournal, in dem die Spieler ihre Beobachtungen und Ergebnisse festhalten können. Das Journal hat ein eigenes Farbschema und Layout, das sich von den anderen Bildschirmen unterscheidet, um den Spielern das Gefühl zu geben, wirklich in eine andere Umgebung einzutauchen. Die Einträge im Journal sind klar strukturiert, damit die Spieler ihre Informationen leicht organisieren und wiederfinden können.
 .journal-card {
     background: #FFF8DC;
     border-radius: 22px;
@@ -253,6 +267,7 @@ div.stButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 
+# Zusätzliche Styles für die speziellen Karten und Elemente, die in den verschiedenen Screens der App verwendet werden. Diese Styles sorgen dafür, dass die Informationen auf den Karten klar strukturiert und ansprechend präsentiert werden, damit die Spieler sie leicht verstehen und interpretieren können. Jede Karte hat ein eigenes Farbschema und Layout, das sich von den anderen unterscheidet, um die verschiedenen Arten von Informationen visuell zu unterscheiden.
 st.markdown("""
 <style>
 .analyzer-card {
@@ -317,7 +332,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================================================
-# 2) SESSION STATE
+# 2) SESSION STATE # Hier werden alle Variablen definiert, die den Zustand der App speichern, z.B. welcher Fall ausgewählt ist, welche Stationen freigeschaltet sind, welche Ergebnisse die Spieler bereits gesehen haben, etc. Diese Variablen werden verwendet, um den Fortschritt der Spieler zu verfolgen und die App entsprechend anzupassen.
 # =========================================================
 if "screen" not in st.session_state:
     st.session_state.screen = "home"
@@ -465,7 +480,7 @@ else:
     case = st.session_state.case
     data = cases[case]
 
-# Mikroskopischer Test bei jedem Patient
+# Mikroskopischer Test bei jedem Patient und die erwarteten Ergebnisse, die den Spielern angezeigt werden, wenn sie die Mikroskop-Station betreten. Diese Informationen helfen den Spielern, die mikroskopischen Eindrücke zu interpretieren und die richtigen Schlüsse zu ziehen. Es ist wichtig, dass diese Informationen klar und verständlich formuliert sind, damit die Spieler sie leicht verstehen und in ihre Diagnosen einbeziehen können.
 lab_info = {
     "Fall 1": {"Mikroskop": "Diff-BB: Neutrophilie, Linksverschiebung möglich.",
                "Agarplatte": "Wachstum auf Kulturmedien erwartet.",
@@ -486,7 +501,7 @@ lab_info = {
                "Agarplatte": "Pilzwachstum könnte sichtbar sein.",
                "Blutprobe": "Unspezifische Entzündungszeichen."},
 }
-# Agar-Ergebnisse pro Fall (COS / MAC / CNA)
+# Agar-Ergebnisse pro Fall (COS / MAC / CNA) und die Interpretation dieser Ergebnisse. Diese Informationen helfen den Spielern, die Ergebnisse der Agarplatten zu verstehen und die richtigen Schlüsse zu ziehen. Es ist wichtig, dass diese Informationen klar und verständlich formuliert sind, damit die Spieler sie leicht verstehen und in ihre Diagnosen einbeziehen können.
 micro_tests = {
     "Fall 1": {"Gram": "Gram-positiv, Kokken in Haufen", "Katalase": "positiv", "Koagulase": "positiv", "Hämolyse": "β-Hämolyse möglich"},
     "Fall 2": {"Gram": "Gram-positiv, Kokken in Ketten", "Katalase": "negativ", "Koagulase": "nicht sinnvoll", "Hämolyse": "β-Hämolyse"},
@@ -536,7 +551,7 @@ microscope_info = {
     }
 }
 
-#Eine Zusammenfassung der Platteninformationen
+#Eine Zusammenfassung der Platteninformationen und der erwarteten Ergebnisse, die den Spielern angezeigt werden, wenn sie die Agarplatten-Station betreten. Diese Informationen helfen den Spielern, die Ergebnisse der Agarplatten zu verstehen und die richtigen Schlüsse zu ziehen. Es ist wichtig, dass diese Informationen klar und verständlich formuliert sind, damit die Spieler sie leicht verstehen und in ihre Diagnosen einbeziehen können.
 growth_results = {
     "Fall 1": {"COS": "Wachstum", "MAC": "kein Wachstum", "CNA": "Wachstum"},
     "Fall 2": {"COS": "Wachstum", "MAC": "kein Wachstum", "CNA": "Wachstum"},
@@ -719,7 +734,7 @@ def reset_gram_game():
 # =========================================================
 
 # -------------------------
-# HOME SCREEN 
+# HOME SCREEN  Hier sollte die Begrüßung, eine kurze Einführung in das Spiel und ein Start-Button angezeigt werden. Es könnte auch ein Hinweis auf den aktuellen Score oder Fortschritt der Spieler geben, damit sie motiviert bleiben, weiterzuspielen.
 # -------------------------
 if st.session_state.screen == "home":
     st.title("🧪 Lab Diagnose Game 🎀")
@@ -787,12 +802,12 @@ elif st.session_state.screen == "lab":
             "Mikroskop": False,
             "Kultur & Tests": False,
             "Blutanalyse": False
-        }
+        } # Alle Stationen bei Fallwechsel wieder sperren
         st.session_state.lab_journal = {
             "Mikroskop": [],
             "Kultur & Tests": [],
             "Blutanalyse": []
-        }
+        } # Labortagebuch bei Fallwechsel zurücksetzen
         st.session_state.gram_done = False
         st.session_state.last_case = case
         st.session_state.feedback = None
@@ -813,6 +828,7 @@ elif st.session_state.screen == "lab":
         st.session_state.screen = "level"
         st.rerun()
 
+    # Anzeige des Fallnamens in einem Pill-Style
     st.markdown(f'<div class="header-pill">🧪 {case}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="header-score">🎯 Score: {st.session_state.score}</div>', unsafe_allow_html=True)
@@ -820,7 +836,7 @@ elif st.session_state.screen == "lab":
 
     left, right = st.columns([0.85, 1.7], gap="large")
 
-        # ---------- LEFT ----------
+        # ---------- LEFT ---------- hier sollten die Patientendaten und die Diagnoseoptionen angezeigt werden
     with left:
         st.markdown(f"""
         <div class="cute-card">
@@ -841,7 +857,7 @@ elif st.session_state.screen == "lab":
         diag_options = ["— bitte wählen —"] + DIAG_CHOICES
 
         feedback_key = f"feedback_{case}"
-
+        # Diagnoseformular mit Feedback-Mechanismus: Hier wird ein Formular erstellt, in dem die Spieler ihre Diagnose auswählen können. Sobald sie ihre Auswahl treffen und das Formular absenden, wird überprüft, ob die Diagnose korrekt ist. Basierend auf der Richtigkeit der Diagnose werden Punkte vergeben oder abgezogen, und eine Nachricht wird angezeigt, die den Spielern Rückmeldung zu ihrer Auswahl gibt.
         with st.form(key=f"diag_form_{case}", clear_on_submit=False):
             diagnosis = st.selectbox(
                 "Was ist am wahrscheinlichsten?",
@@ -850,7 +866,7 @@ elif st.session_state.screen == "lab":
                 key=f"diag_{case}"
             )
             submitted = st.form_submit_button("✅ Diagnose abgeben")
-
+            # Feedback-Mechanismus: Punktevergabe und Anzeige von Hinweisen basierend auf der Auswahl der Diagnose. Es wird überprüft, ob die Diagnose korrekt ist, und entsprechend Punkte vergeben oder abgezogen. Zusätzlich wird eine Nachricht angezeigt, die den Spielern Rückmeldung zu ihrer Auswahl gibt.
         if submitted:
             if diagnosis == "— bitte wählen —":
                 st.session_state[feedback_key] = {
@@ -894,7 +910,7 @@ elif st.session_state.screen == "lab":
             else:
                 st.warning(fb["msg"])
     # ---------- RIGHT ----------
-        # ---------- RIGHT ----------
+        # ---------- RIGHT ---------- hier sollten die Laborstationen und die Ergebnisse/Hinweise angezeigt werden, abhängig davon, welche Stationen freigeschaltet wurden
     with right:
         top1, top2 = st.columns([6, 1])
 
@@ -904,7 +920,7 @@ elif st.session_state.screen == "lab":
         with top2:
             if st.button("❓", key="help_lab"):
                 st.session_state.show_help = not st.session_state.show_help
-
+        # Hilfekarte mit Erklärung zum Spielablauf und den Laborstationen: Hier wird eine Karte angezeigt, die den Spielern eine kurze Einführung in den Spielablauf gibt und erklärt, wie die verschiedenen Laborstationen funktionieren. Diese Karte soll den Spielern helfen, sich zurechtzufinden und zu verstehen, wie sie die Informationen aus den Laborstationen nutzen können, um die richtige Diagnose zu stellen.
         if st.session_state.show_help:
             st.markdown("""
             <div class="hint-card">
@@ -950,7 +966,7 @@ elif st.session_state.screen == "lab":
                 st.session_state.screen = "mikroskop"
                 reset_gram_game()
                 st.rerun()
-
+        # Hinweis: Die Funktion reset_gram_game() wird aufgerufen, um den Fortschritt des Gram-Spiels zurückzusetzen, wenn die Mikroskop-Station geöffnet wird. Dadurch wird sichergestellt, dass die Spieler jedes Mal von vorne beginnen, wenn sie die Mikroskop-Station betreten, und es verhindert mögliche Verwirrung durch vorherige Ergebnisse oder Schritte im Gram-Spiel.
         with cols[1]:
             st.markdown(f"""
             <div class="station-wrap">
