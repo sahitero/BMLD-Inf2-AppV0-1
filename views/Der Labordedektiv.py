@@ -308,12 +308,12 @@ if "selected_plate" not in st.session_state:
 # 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientanakten)
 # =========================================================
 cases = {
-    "Fall 1": {"Name": "Anna Müller", "Alter": 67, "Geschlecht": "weiblich", "Symptome": "Fieber, Schüttelfrost, Verwirrtheit"},
+    "Fall 1": {"Name": "Britney McAdams", "Alter": 26, "Geschlecht": "weiblich", "Symptome": "Fieber, Schüttelfrost, Verwirrtheit"},
     "Fall 2": {"Name": "Lukas Meier", "Alter": 55, "Geschlecht": "männlich", "Symptome": "Brustschmerzen, Atemnot"},
     "Fall 3": {"Name": "Sara Keller", "Alter": 24, "Geschlecht": "weiblich", "Symptome": "Übelkeit, Bauchschmerzen"},
-    "Fall 4": {"Name": "Tim Weber", "Alter": 34, "Geschlecht": "männlich", "Symptome": "Juckreiz, Bauchschmerzen nach Reise"},
+    "Fall 4": {"Name": "Tim Weber", "Alter": 33, "Geschlecht": "männlich", "Symptome": "Juckreiz, Bauchschmerzen nach Reise"},
     "Fall 5": {"Name": "Clara Huber", "Alter": 72, "Geschlecht": "weiblich", "Symptome": "Rötung um Katheterstelle"},
-    "Fall 6": {"Name": "Noah Keller", "Alter": 41, "Geschlecht": "männlich", "Symptome": "Husten, Müdigkeit"},
+    "Fall 6": {"Name": "Kelly Keller", "Alter": 29, "Geschlecht": "weiblich", "Symptome": "Husten, Müdigkeit"},
 }
 
 # Mikroskopischer Test bei jedem Patient
@@ -327,12 +327,12 @@ lab_info = {
     "Fall 3": {"Mikroskop": "Stäbchen wären passend.",
                "Agarplatte": "MAC wäre besonders spannend.",
                "Blutprobe": "Leichte Entzündungszeichen möglich."},
-    "Fall 4": {"Mikroskop": "Grampositive Kokken in Haufen möglich.",
+    "Fall 4": {"Mikroskop": "Keine Bakterien zu sehen.",
                "Agarplatte": "Wachstum möglich, aber weniger aggressiv.",
-               "Blutprobe": "CRP eher wenig erhöht."},
-    "Fall 5": {"Mikroskop": "Kein typisches Bakterienbild im Fokus.",
-               "Agarplatte": "Standardplatten wenig hilfreich.",
                "Blutprobe": "Eosinophilie wäre ein zentraler Hinweis."},
+    "Fall 5": {"Mikroskop": "Kokken sind sichtbar.",
+               "Agarplatte": "Standardplatten wenig hilfreich.",
+               "Blutprobe": "Erhöhte Entzündungszeichen."},
     "Fall 6": {"Mikroskop": "Sprosszellen oder Hyphen möglich.",
                "Agarplatte": "Pilzwachstum könnte sichtbar sein.",
                "Blutprobe": "Unspezifische Entzündungszeichen."},
@@ -342,8 +342,8 @@ micro_tests = {
     "Fall 1": {"Gram": "Gram-positiv, Kokken in Haufen", "Katalase": "positiv", "Koagulase": "positiv", "Hämolyse": "β-Hämolyse möglich"},
     "Fall 2": {"Gram": "Gram-positiv, Kokken in Ketten", "Katalase": "negativ", "Koagulase": "nicht sinnvoll", "Hämolyse": "β-Hämolyse"},
     "Fall 3": {"Gram": "Gram-negativ, Stäbchen", "Katalase": "nicht zentral", "Koagulase": "nicht sinnvoll", "Hämolyse": "nicht zentral"},
-    "Fall 4": {"Gram": "Gram-positiv, Kokken in Haufen", "Katalase": "positiv", "Koagulase": "negativ", "Hämolyse": "meist keine (γ)"},
-    "Fall 5": {"Gram": "Nicht sinnvoll", "Katalase": "nicht sinnvoll", "Koagulase": "nicht sinnvoll", "Hämolyse": "nicht sinnvoll"},
+    "Fall 4": {"Gram": "Nicht sinnvoll", "Katalase": "nicht sinnvoll", "Koagulase": "nicht sinnvoll", "Hämolyse": "nicht sinnvoll"},
+    "Fall 5": {"Gram": "Gram-positiv", "Katalase": "negativ", "Koagulase": "negativ", "Hämolyse": "leichte Hämolyse"},
     "Fall 6": {"Gram": "Nicht typisch / Pilzverdacht", "Katalase": "nicht primär", "Koagulase": "nicht primär", "Hämolyse": "nicht typisch"},
 }
 # beschreibt die Mikroskopischen Eindrücke pro Fall, die angezeigt werden, wenn die Spieler die Mikroskop-Station öffnen. Es enthält auch den Pfad zu einem Bild, das den mikroskopischen Eindruck visualisiert. Diese Bilder sollten in einem Ordner "images" im selben Verzeichnis wie die App liegen.
@@ -374,8 +374,8 @@ microscope_info = {
         "sample": "Probe: Stuhlprobe."
     },
     "Fall 5": {
-        "view": "Kein typisches bakterielles Bild erkennbar.",
-        "gram_type": "Nicht sinnvoll",
+        "view": "Grampositive Kokken erkennbar.",
+        "gram_type": "Gram-positiv, aber unspezifisch",
         "image": "images/fall5_mikro.png",
         "sample": "Probe: Liquor."
     },
@@ -435,7 +435,7 @@ agar_results = {
     "Fall 1": {
         "COS": "Wachstum vorhanden, helle Kolonien, Hämolyse sichtbar.",
         "MAC": "Kein Wachstum.",
-        "CNA": "Deutliches Wachstum."
+        "CNA": "Deutliches Wachstum mit Hämolyse."
     },
     "Fall 2": {
         "COS": "Deutliches Wachstum mit β-Hämolyse.",
@@ -444,23 +444,23 @@ agar_results = {
     },
     "Fall 3": {
         "COS": "Wachstum vorhanden.",
-        "MAC": "Wachstum vorhanden.",
+        "MAC": "Starkes Wachstum vorhanden.",
         "CNA": "Kein Wachstum."
     },
     "Fall 4": {
-        "COS": "Wachstum vorhanden, keine Hämolyse.",
+        "COS": "Kein Wachstum.",
         "MAC": "Kein Wachstum.",
         "CNA": "Wachstum vorhanden."
     },
     "Fall 5": {
-        "COS": "Kein relevantes Wachstum.",
-        "MAC": "Kein relevantes Wachstum.",
-        "CNA": "Kein relevantes Wachstum."
+        "COS": "leichtes Wachstum.",
+        "MAC": "Kein Wachstum.",
+        "CNA": "leichtes Wachstum."
     },
     "Fall 6": {
         "COS": "Mögliches atypisches Wachstum.",
-        "MAC": "Kaum relevant.",
-        "CNA": "Kaum relevant."
+        "MAC": "Kein Wachstum.",
+        "CNA": "Kein Wachstum."
     }
 }
 
@@ -469,7 +469,7 @@ gram_data = {
     "Fall 1": "Gram-positiv, Kokken in Haufen",
     "Fall 2": "Gram-negativ, Stäbchen",
     "Fall 3": "Gram-positiv, Ketten",
-    "Fall 4": "Keine Bakterien, aber auffällige Strukturen (Helminthen-Ei)",
+    "Fall 4": "Keine Bakterien, aber auffällige Strukturen",
     "Fall 5": "Gram-positiv, Kokken",
     "Fall 6": "Pilzstrukturen sichtbar"
 }
@@ -574,6 +574,7 @@ if st.session_state.screen == "home":
 
     if st.button("Start", key="start_home"):
         st.session_state.screen = "level"
+        st.session_state.selected_plate = None
         st.rerun()
 
 # -------------------------
@@ -588,7 +589,7 @@ elif st.session_state.screen == "level":
     </div>
     """, unsafe_allow_html=True)
 
-    order = ["Fall 1", "Fall 2", "Fall 3", "Fall 4", "Fall 5", "Fall 6"]
+    order = ["Fall 1 - Schwerer Infekt mit Fieber", "Fall 2 - Akute Halsentzündung", "Fall 3 - Verdacht auf Harnwegsinfekt", "Fall 4 - Gastrointestinale Beschweerden", "Fall 5 - Infektion an Kathetherstelle", "Fall 6 - Verdacht auf Infektion"]
     cols = st.columns(3)
 
     for i, f in enumerate(order):
