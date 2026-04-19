@@ -305,16 +305,78 @@ if "selected_plate" not in st.session_state:
     st.session_state.selected_plate = None
 
 # =========================================================
-# 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientanakten)
+# 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientenakten)
 # =========================================================
 cases = {
-    "Fall 1": {"Name": "Britney McAdams", "Alter": 26, "Geschlecht": "weiblich", "Symptome": "Fieber, Schüttelfrost, Verwirrtheit"},
-    "Fall 2": {"Name": "Lukas Meier", "Alter": 55, "Geschlecht": "männlich", "Symptome": "Brustschmerzen, Atemnot"},
-    "Fall 3": {"Name": "Sara Keller", "Alter": 24, "Geschlecht": "weiblich", "Symptome": "Übelkeit, Bauchschmerzen"},
-    "Fall 4": {"Name": "Tim Weber", "Alter": 33, "Geschlecht": "männlich", "Symptome": "Juckreiz, Bauchschmerzen nach Reise"},
-    "Fall 5": {"Name": "Clara Huber", "Alter": 72, "Geschlecht": "weiblich", "Symptome": "Rötung um Katheterstelle"},
-    "Fall 6": {"Name": "Kelly Keller", "Alter": 29, "Geschlecht": "weiblich", "Symptome": "Husten, Müdigkeit"},
+    "Fall 1": {
+        "story": "Eine 26-jährige Patientin wird notfallmässig ins Spital eingeliefert. "
+                 "Sie wirkt verwirrt und desorientiert. Die Pflege berichtet von hohem Fieber und starkem Schüttelfrost. "
+                 "Bei der Untersuchung zeigt sich eine schmerzhafte Schwellung am Oberschenkel, aus der Eiter austritt. "
+                 "Eine Probe wird ins Labor geschickt.",
+        "name": "Britney McAdams",
+        "age": 26,
+        "sex": "weiblich",
+        "symptoms": "Fieber, Schüttelfrost, Verwirrtheit"
+    },
+
+    "Fall 2": {
+        "story": "Eine Patientin stellt sich mit starken Halsschmerzen und Fieber vor. "
+                 "Sie berichtet über Schluckbeschwerden seit mehreren Tagen. "
+                 "Bei der Untersuchung zeigen sich gerötete Tonsillen und geschwollene Lymphknoten.",
+        "name": "Rebekka Schmidt",
+        "age": 55,
+        "sex": "weiblich",
+        "symptoms": "Halsschmerzen, Fieber"
+    },
+
+    "Fall 3": {
+        "story": "Eine junge Patientin klagt über Schmerzen beim Wasserlassen und häufigen Harndrang. "
+                 "Zusätzlich bestehen leichte Unterbauchschmerzen.",
+        "name": "Sara Keller",
+        "age": 24,
+        "sex": "weiblich",
+        "symptoms": "Dysurie, Bauchschmerzen"
+    },
+
+    "Fall 4": {
+        "story": "Ein Patient stellt sich mit anhaltenden Bauchschmerzen und Durchfall vor. "
+                 "Er berichtet über eine kürzliche Reise ins Ausland.",
+        "name": "Tim Weber",
+        "age": 33,
+        "sex": "männlich",
+        "symptoms": "Bauchschmerzen, Durchfall"
+    },
+
+    "Fall 5": {
+        "story": "Bei einem älteren Patienten zeigt sich eine Rötung im Bereich einer Katheterstelle. "
+                 "Die Beschwerden bestehen seit mehreren Tagen.",
+        "name": "Samuel D McDonald",
+        "age": 72,
+        "sex": "männlich",
+        "symptoms": "Rötung an Katheterstelle"
+    },
+
+    "Fall 6": {
+        "story": "Eine Patientin berichtet über Juckreiz und einen weisslichen Belag im Mundbereich. "
+                 "Die Beschwerden bestehen seit einigen Tagen.",
+        "name": "Kelly Keller",
+        "age": 29,
+        "sex": "weiblich",
+        "symptoms": "Juckreiz, weisser Belag"
+    }
 }
+
+# Alten gespeicherten Fallnamen bereinigen
+if "case" in st.session_state and isinstance(st.session_state.case, str):
+    if " - " in st.session_state.case:
+        st.session_state.case = st.session_state.case.split(" - ")[0]
+
+# Falls kein gültiger Fall gesetzt ist
+if "case" not in st.session_state or st.session_state.case not in cases:
+    st.session_state.screen = "level"
+else:
+    case = st.session_state.case
+    data = cases[case]
 
 # Mikroskopischer Test bei jedem Patient
 lab_info = {
@@ -589,23 +651,32 @@ elif st.session_state.screen == "level":
     </div>
     """, unsafe_allow_html=True)
 
-    order = ["Fall 1 - Schwerer Infekt mit Fieber", "Fall 2 - Akute Halsentzündung", "Fall 3 - Verdacht auf Harnwegsinfekt", "Fall 4 - Gastrointestinale Beschweerden", "Fall 5 - Infektion an Kathetherstelle", "Fall 6 - Verdacht auf Infektion"]
+    case_preview = {
+    "Fall 1": "Schwerer Infekt mit Fieber",
+    "Fall 2": "Akute Halsentzündung",
+    "Fall 3": "Verdacht auf Harnwegsinfekt",
+    "Fall 4": "Gastrointestinale Beschwerden",
+    "Fall 5": "Infektion an Katheterstelle",
+    "Fall 6": "Verdacht auf Infektion",
+}
+
+    order = ["Fall 1", "Fall 2", "Fall 3", "Fall 4", "Fall 5", "Fall 6"]
+
     cols = st.columns(3)
 
-    for i, f in enumerate(order):
+    for i, case_key in enumerate(order):
         with cols[i % 3]:
-            if st.button(f, key=f"btn_{f}"):
-                st.session_state.case = f
+            label = f"{case_key} - {case_preview[case_key]}"
+            if st.button(label, key=f"btn_{case_key}"):
+                st.session_state.case = case_key
                 st.session_state.screen = "lab"
                 st.session_state.feedback = None
                 st.session_state.selected_plate = None
                 reset_gram_game()
                 st.rerun()
-
-    if st.button("🔙 Zurück", key="back_level"):
+    if st.button("🔙 Zurück zum Home", key="back_level"):
         st.session_state.screen = "home"
         st.rerun()
-
 # -------------------------
 # LAB SCREEN zur Fallbearbeitung, hier sollten die Patientendaten, die Auswahl der Laborstationen und die Diagnoseoptionen angezeigt werden. Je nachdem, welche Laborstationen freigeschaltet wurden, sollten die entsprechenden Ergebnisse/Hinweise angezeigt werden. Es sollte auch die Möglichkeit geben, zur Level-Auswahl zurückzukehren.
 # -------------------------
@@ -652,10 +723,15 @@ elif st.session_state.screen == "lab":
         st.markdown(f"""
         <div class="cute-card">
         <h4>📄 Patientenakte</h4>
-        <b>Name:</b> {data["Name"]}<br>
-        <b>Alter:</b> {data["Alter"]}<br>
-        <b>Geschlecht:</b> {data["Geschlecht"]}<br>
-        <b>Symptome:</b> {data["Symptome"]}
+        
+        <div class="patient-story">{data["story"]}</div>
+
+        <hr>
+
+        <b>Name:</b> {data["name"]}<br>
+        <b>Alter:</b> {data["age"]}<br>
+        <b>Geschlecht:</b> {data["sex"]}<br>
+        <b>Symptome:</b> {data["symptoms"]}
         </div>
         """, unsafe_allow_html=True)
 
