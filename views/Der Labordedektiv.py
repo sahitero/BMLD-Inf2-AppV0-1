@@ -382,6 +382,9 @@ if "chem_done" not in st.session_state:
 if "hema_done" not in st.session_state:
     st.session_state.hema_done = False
 
+if "scored_cases" not in st.session_state:
+    st.session_state.scored_cases = {}
+
 # =========================================================
 # 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientenakten)
 # =========================================================
@@ -811,12 +814,12 @@ elif st.session_state.screen == "lab":
 
     left, right = st.columns([0.85, 1.7], gap="large")
 
-    # ---------- LEFT ----------
+  # ---------- LEFT ----------
     with left:
         st.markdown(f"""
         <div class="cute-card">
         <h4>📄 Patientenakte</h4>
-        
+
         <div class="patient-story">{data["story"]}</div>
 
         <hr>
@@ -840,13 +843,14 @@ elif st.session_state.screen == "lab":
             )
             submitted = st.form_submit_button("✅ Diagnose abgeben")
 
-        if submitted:
-            if diagnosis == "— bitte wählen —":
-                st.session_state.feedback = {
-                    "type": "warning",
-                    "msg": "Bitte zuerst eine Diagnose auswählen 🙂"
-                }
-            else:
+    if submitted:
+        if diagnosis == "— bitte wählen —":
+            st.session_state.feedback = {
+                "type": "warning",
+                "msg": "Bitte zuerst eine Diagnose auswählen 🙂"
+            }
+        else:
+            if case not in st.session_state.scored_cases:
                 if diagnosis == solutions[case]:
                     st.session_state.score += 10
                     st.session_state.feedback = {
@@ -859,6 +863,20 @@ elif st.session_state.screen == "lab":
                         "type": "error",
                         "msg": f"❌ Falsch. Richtige Lösung: {solutions[case]} (-5 Punkte)"
                     }
+
+                st.session_state.scored_cases[case] = True
+            else:
+                if diagnosis == solutions[case]:
+                    st.session_state.feedback = {
+                        "type": "success",
+                        "msg": "✅ Richtig! Dieser Fall wurde bereits bewertet."
+                    }
+                else:
+                    st.session_state.feedback = {
+                        "type": "error",
+                        "msg": f"❌ Falsch. Dieser Fall wurde bereits bewertet. Richtige Lösung: {solutions[case]}"
+                    }
+
             st.rerun()
 
         fb = st.session_state.get("feedback")
@@ -869,7 +887,6 @@ elif st.session_state.screen == "lab":
                 st.error(fb["msg"])
             else:
                 st.warning(fb["msg"])
-
     # ---------- RIGHT ----------
         # ---------- RIGHT ----------
     with right:
@@ -1022,15 +1039,15 @@ elif st.session_state.screen == "agar":
         st.session_state.screen = "lab"
         st.rerun()
 
-    st.markdown("""
-    <div class="path-card">
-    🧪 <b>Plattenübersicht:</b> COS = Kochblut, MAC = MacConkey, CNA = grampositive Selektion
-    </div>
-    """, unsafe_allow_html=True)
+        st.markdown("""
+        <div class="path-card">
+        🧪 <b>Plattenübersicht:</b> COS = Kochblut, MAC = MacConkey, CNA = grampositive Selektion
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.subheader("1️⃣ Agarplatte auswählen")
+        st.subheader("1️⃣ Agarplatte auswählen")
 
-    col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns(3)
 
     with col1:
         st.markdown("""
