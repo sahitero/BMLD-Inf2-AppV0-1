@@ -449,6 +449,34 @@ microscope_info = {
     }
 }
 
+#Eine Zusammenfassung der Platteninformationen
+growth_results = {
+    "Fall 1": {"COS": "Wachstum", "MAC": "kein Wachstum", "CNA": "Wachstum"},
+    "Fall 2": {"COS": "Wachstum", "MAC": "kein Wachstum", "CNA": "Wachstum"},
+    "Fall 3": {"COS": "Wachstum", "MAC": "Wachstum", "CNA": "kein Wachstum"},
+    "Fall 4": {"COS": "kein Wachstum", "MAC": "kein Wachstum", "CNA": "kein Wachstum"},
+    "Fall 5": {"COS": "Wachstum", "MAC": "kein Wachstum", "CNA": "Wachstum"},
+    "Fall 6": {"COS": "Wachstum", "MAC": "kein Wachstum", "CNA": "kein Wachstum"},
+}
+
+#Für die Speicherung der Plattenwerte ins Laborjournal
+if st.session_state.selected_plate:
+    plate = st.session_state.selected_plate
+    result = growth_results[case][plate]
+
+    st.subheader(f"🧫 {plate}-Platte")
+
+    if result == "Wachstum":
+        st.success("Wachstum vorhanden")
+    else:
+        st.error("kein Wachstum")
+
+    # Speichern der Ergebnisse im Laborjournal ¢wichtigster Part
+    entry = f"{plate}: {result}"
+
+    if entry not in st.session_state.lab_journal["Kultur & Tests"]:
+        st.session_state.lab_journal["Kultur & Tests"].append(entry)
+
 # Referenzwerte f¨r Blutprobe zur Interpretation
 REF = {
     "CRP (mg/L)": (0, 5),
@@ -989,9 +1017,9 @@ plate_images = {
         "CNA": "images/fallleer_cna.png"
     },
     "Fall 4": {
-        "COS": "images/fall4_cos.png",
+        "COS": "images/fallleer_cos.png",
         "MAC": "images/fallleer_mac.png",
-        "CNA": "images/fall4_cna.png"
+        "CNA": "images/fallleer_cna.png"
     },
     "Fall 5": {
         "COS": "images/fall5_cos.png",
@@ -1084,23 +1112,18 @@ if plate is not None:
 
         st.write("---")
 
-        if st.button("📓 Befunde ins Laborjournal übernehmen", key=f"journal_agar_{case}"):
+    if st.button("📓 Befunde ins Laborjournal übernehmen", key=f"journal_agar_{case}"):
             mt = micro_tests[case]
 
-            st.session_state.lab_journal["Kultur & Tests"] = []
-            st.session_state.lab_journal["Kultur & Tests"].append(f"Gram: {mt['Gram']}")
-            st.session_state.lab_journal["Kultur & Tests"].append(f"Katalase: {mt['Katalase']}")
-            st.session_state.lab_journal["Kultur & Tests"].append(f"Koagulase: {mt['Koagulase']}")
-            st.session_state.lab_journal["Kultur & Tests"].append(f"Hämolyse: {mt['Hämolyse']}")
+            eintraege = [
+                f"{plate}: {result}",
+                f"Gram: {mt['Gram']}",
+                f"Katalase: {mt['Katalase']}",
+                f"Koagulase: {mt['Koagulase']}",
+                f"Hämolyse: {mt['Hämolyse']}"
+        ]
 
-            st.success("✅ Kultur & Tests wurden ins Journal übernommen!")
-
-    else:
-        st.markdown("""
-        <div class="hint-card">
-        Wähle zuerst eine Platte aus, damit Wachstum, Schnelltests und Interpretation angezeigt werden.
-        </div>
-        """, unsafe_allow_html=True)
+            st.session_state.lab_journal["Kultur & Tests"] = eintraege
 # -------------------------
 # MIKROSKOP SCREEN hier können die Spieler den mikroskopischen Eindruck der Probe sehen und danach die Gram-Färbung durchführen, indem sie die Schritte in der richtigen Reihenfolge auswählen. Es gibt auch einen Zurück-Button, um zurück zum Labor zu gelangen.
 # -------------------------
