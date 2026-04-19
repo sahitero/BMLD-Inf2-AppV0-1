@@ -459,24 +459,6 @@ growth_results = {
     "Fall 6": {"COS": "Wachstum", "MAC": "kein Wachstum", "CNA": "kein Wachstum"},
 }
 
-#Für die Speicherung der Plattenwerte ins Laborjournal
-if st.session_state.selected_plate:
-    plate = st.session_state.selected_plate
-    result = growth_results[case][plate]
-
-    st.subheader(f"🧫 {plate}-Platte")
-
-    if result == "Wachstum":
-        st.success("Wachstum vorhanden")
-    else:
-        st.error("kein Wachstum")
-
-    # Speichern der Ergebnisse im Laborjournal ¢wichtigster Part
-    entry = f"{plate}: {result}"
-
-    if entry not in st.session_state.lab_journal["Kultur & Tests"]:
-        st.session_state.lab_journal["Kultur & Tests"].append(entry)
-
 # Referenzwerte f¨r Blutprobe zur Interpretation
 REF = {
     "CRP (mg/L)": (0, 5),
@@ -944,6 +926,7 @@ elif st.session_state.screen == "lab":
 # -------------------------
 elif st.session_state.screen == "agar":
     case = st.session_state.case
+    plate = st.session_state.get("selected_plate", None)
 
     st.markdown("""
     <div class="screen-box">
@@ -995,108 +978,91 @@ elif st.session_state.screen == "agar":
 
     st.write("")
 
-    # 🧠 aktuelle Auswahl holen
-plate = st.session_state.get("selected_plate", None)
-case = st.session_state.case
-
-# 🖼️ Bilder
-plate_images = {
-    "Fall 1": {
-        "COS": "images/fall1_cos.png",
-        "MAC": "images/fallleer_mac.png",
-        "CNA": "images/fall1_cna.png"
-    },
-    "Fall 2": {
-        "COS": "images/fall2_cos.png",
-        "MAC": "images/fallleer_mac.png",
-        "CNA": "images/fall2_cna.png"
-    },
-    "Fall 3": {
-        "COS": "images/fall3_cos.png",
-        "MAC": "images/fall3_mac.png",
-        "CNA": "images/fallleer_cna.png"
-    },
-    "Fall 4": {
-        "COS": "images/fallleer_cos.png",
-        "MAC": "images/fallleer_mac.png",
-        "CNA": "images/fallleer_cna.png"
-    },
-    "Fall 5": {
-        "COS": "images/fall5_cos.png",
-        "MAC": "images/fallleer_mac.png",
-        "CNA": "images/fall5_cna.png"
-    },
-    "Fall 6": {
-        "COS": "images/fall6_cos.png",
-        "MAC": "images/fallleer_mac.png",
-        "CNA": "images/fallleer_cna.png"
+    # 🖼️ Bilder
+    plate_images = {
+        "Fall 1": {
+            "COS": "images/fall1_cos.png",
+            "MAC": "images/fallleer_mac.png",
+            "CNA": "images/fall1_cna.png"
+        },
+        "Fall 2": {
+            "COS": "images/fall2_cos.png",
+            "MAC": "images/fallleer_mac.png",
+            "CNA": "images/fall2_cna.png"
+        },
+        "Fall 3": {
+            "COS": "images/fall3_cos.png",
+            "MAC": "images/fall3_mac.png",
+            "CNA": "images/fallleer_cna.png"
+        },
+        "Fall 4": {
+            "COS": "images/fallleer_cos.png",
+            "MAC": "images/fallleer_mac.png",
+            "CNA": "images/fallleer_cna.png"
+        },
+        "Fall 5": {
+            "COS": "images/fall5_cos.png",
+            "MAC": "images/fallleer_mac.png",
+            "CNA": "images/fall5_cna.png"
+        },
+        "Fall 6": {
+            "COS": "images/fall6_cos.png",
+            "MAC": "images/fallleer_mac.png",
+            "CNA": "images/fallleer_cna.png"
+        }
     }
-}
 
-# 🧾 Befunde
-plate_text = {
-    "Fall 1": {
-        "COS": "Goldene Kolonien mit β-Hämolyse",
-        "MAC": "Kein Wachstum",
-        "CNA": "Wachstum mit β-Hämolyse"
-    },
-    "Fall 2": {
-        "COS": "Kleine Kolonien mit starker β-Hämolyse",
-        "MAC": "Kein Wachstum",
-        "CNA": "Wachstum mit β-Hämolyse"
-    },
-    "Fall 3": {
-        "COS": "Graue Kolonien",
-        "MAC": "Rosa Kolonien (Laktose+)",
-        "CNA": "Kein Wachstum"
-    },
-    "Fall 4": {
-        "COS": "Kein Wachstum",
-        "MAC": "Kein Wachstum",
-        "CNA": "Kein Wachstum"
-    },
-    "Fall 5": {
-        "COS": "Weisse Kolonien ohne Hämolyse",
-        "MAC": "Kein Wachstum",
-        "CNA": "Wachstum ohne Hämolyse"
-    },
-    "Fall 6": {
-        "COS": "Cremige, weissliche Kolonien",
-        "MAC": "Kein Wachstum",
-        "CNA": "Kaum oder kein Wachstum"
+    # 🧾 Agar-Befunde
+    plate_text = {
+        "Fall 1": {
+            "COS": "Goldene Kolonien mit β-Hämolyse",
+            "MAC": "Kein Wachstum",
+            "CNA": "Wachstum mit β-Hämolyse"
+        },
+        "Fall 2": {
+            "COS": "Kleine Kolonien mit starker β-Hämolyse",
+            "MAC": "Kein Wachstum",
+            "CNA": "Wachstum mit β-Hämolyse"
+        },
+        "Fall 3": {
+            "COS": "Graue Kolonien",
+            "MAC": "Rosa Kolonien (Laktose+)",
+            "CNA": "Kein Wachstum"
+        },
+        "Fall 4": {
+            "COS": "Kein Wachstum",
+            "MAC": "Kein Wachstum",
+            "CNA": "Kein Wachstum"
+        },
+        "Fall 5": {
+            "COS": "Weisse Kolonien ohne Hämolyse",
+            "MAC": "Kein Wachstum",
+            "CNA": "Wachstum ohne Hämolyse"
+        },
+        "Fall 6": {
+            "COS": "Cremige, weissliche Kolonien",
+            "MAC": "Kein Wachstum",
+            "CNA": "Kaum oder kein Wachstum"
+        }
     }
-}
 
-# 🔬 ANZEIGE
-if plate is not None:
-    st.markdown("## 🧫 Wachstum auf der ausgewählten Platte")
-
-    st.markdown(f"""
-    <div class="result-box">
-        <h3>🔎 Ausgewählte Platte: {plate}</h3>
-    </div>
-    """, unsafe_allow_html=True)
-
-    image_path = plate_images[case][plate]
-    text = plate_text[case][plate]
-
-    st.image(image_path, use_container_width=True)
-    st.info(text)
-
-    if st.session_state.selected_plate:
-        plate = st.session_state.selected_plate
-        result = agar_results[case][plate]
+    if plate is not None:
+        image_path = plate_images[case][plate]
+        text = plate_text[case][plate]
         mt = micro_tests[case]
 
-        st.subheader("2️⃣ Wachstum auf der ausgewählten Platte")
+        st.markdown("## 🧫 Wachstum auf der ausgewählten Platte")
+
         st.markdown(f"""
-        <div class="result-card">
-        <h4>🔍 Ausgewählte Platte: {plate}</h4>
-        {result}
+        <div class="result-box">
+            <h3>🔎 Ausgewählte Platte: {plate}</h3>
         </div>
         """, unsafe_allow_html=True)
 
-        st.subheader("3️⃣ Mikrobiologische Schnelltests")
+        st.image(image_path, use_container_width=True)
+        st.info(text)
+
+        st.subheader("2️⃣ Mikrobiologische Schnelltests")
         st.markdown(f"""
         <div class="result-card">
         <b>Gram:</b> {mt["Gram"]}<br>
@@ -1106,24 +1072,27 @@ if plate is not None:
         </div>
         """, unsafe_allow_html=True)
 
-        st.subheader("4️⃣ Interpretation")
+        st.subheader("3️⃣ Interpretation")
         for h in interpret_micro(mt):
             st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
 
         st.write("---")
 
-    if st.button("📓 Befunde ins Laborjournal übernehmen", key=f"journal_agar_{case}"):
-            mt = micro_tests[case]
-
-            eintraege = [
-                f"{plate}: {result}",
+        if st.button("📓 Befunde ins Laborjournal übernehmen", key=f"journal_agar_{case}"):
+            st.session_state.lab_journal["Kultur & Tests"] = [
+                f"{plate}: {text}",
                 f"Gram: {mt['Gram']}",
                 f"Katalase: {mt['Katalase']}",
                 f"Koagulase: {mt['Koagulase']}",
                 f"Hämolyse: {mt['Hämolyse']}"
-        ]
+            ]
 
-            st.session_state.lab_journal["Kultur & Tests"] = eintraege
+    else:
+        st.markdown("""
+        <div class="hint-card">
+        Wähle zuerst eine Platte aus, damit Wachstum, Schnelltests und Interpretation angezeigt werden.
+        </div>
+        """, unsafe_allow_html=True)
 # -------------------------
 # MIKROSKOP SCREEN hier können die Spieler den mikroskopischen Eindruck der Probe sehen und danach die Gram-Färbung durchführen, indem sie die Schritte in der richtigen Reihenfolge auswählen. Es gibt auch einen Zurück-Button, um zurück zum Labor zu gelangen.
 # -------------------------
