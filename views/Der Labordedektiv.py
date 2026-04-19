@@ -385,6 +385,12 @@ if "hema_done" not in st.session_state:
 if "scored_cases" not in st.session_state:
     st.session_state.scored_cases = {}
 
+if "feedback" not in st.session_state:
+    st.session_state.feedback = None
+
+if "score" not in st.session_state:
+    st.session_state.score = 0
+
 # =========================================================
 # 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientenakten)
 # =========================================================
@@ -814,7 +820,7 @@ elif st.session_state.screen == "lab":
 
     left, right = st.columns([0.85, 1.7], gap="large")
 
-  # ---------- LEFT ----------
+        # ---------- LEFT ----------
     with left:
         st.markdown(f"""
         <div class="cute-card">
@@ -834,6 +840,8 @@ elif st.session_state.screen == "lab":
         st.subheader("🧠 Diagnose (bitte wählen)")
         diag_options = ["— bitte wählen —"] + DIAG_CHOICES
 
+        feedback_key = f"feedback_{case}"
+
         with st.form(key=f"diag_form_{case}", clear_on_submit=False):
             diagnosis = st.selectbox(
                 "Was ist am wahrscheinlichsten?",
@@ -843,43 +851,41 @@ elif st.session_state.screen == "lab":
             )
             submitted = st.form_submit_button("✅ Diagnose abgeben")
 
-    if submitted:
-        if diagnosis == "— bitte wählen —":
-            st.session_state.feedback = {
-                "type": "warning",
-                "msg": "Bitte zuerst eine Diagnose auswählen 🙂"
-            }
-        else:
-            if case not in st.session_state.scored_cases:
-                if diagnosis == solutions[case]:
-                    st.session_state.score += 10
-                    st.session_state.feedback = {
-                        "type": "success",
-                        "msg": "✅ Richtig! +10 Punkte"
-                    }
-                else:
-                    st.session_state.score -= 5
-                    st.session_state.feedback = {
-                        "type": "error",
-                        "msg": f"❌ Falsch. Richtige Lösung: {solutions[case]} (-5 Punkte)"
-                    }
-
-                st.session_state.scored_cases[case] = True
+        if submitted:
+            if diagnosis == "— bitte wählen —":
+                st.session_state[feedback_key] = {
+                    "type": "warning",
+                    "msg": "Bitte zuerst eine Diagnose auswählen 🙂"
+                }
             else:
-                if diagnosis == solutions[case]:
-                    st.session_state.feedback = {
-                        "type": "success",
-                        "msg": "✅ Richtig! Dieser Fall wurde bereits bewertet."
-                    }
+                if case not in st.session_state.scored_cases:
+                    if diagnosis == solutions[case]:
+                        st.session_state.score += 10
+                        st.session_state[feedback_key] = {
+                            "type": "success",
+                            "msg": "✅ Richtig! +10 Punkte"
+                        }
+                    else:
+                        st.session_state.score -= 5
+                        st.session_state[feedback_key] = {
+                            "type": "error",
+                            "msg": f"❌ Falsch. Richtige Lösung: {solutions[case]} (-5 Punkte)"
+                        }
+
+                    st.session_state.scored_cases[case] = True
                 else:
-                    st.session_state.feedback = {
-                        "type": "error",
-                        "msg": f"❌ Falsch. Dieser Fall wurde bereits bewertet. Richtige Lösung: {solutions[case]}"
-                    }
+                    if diagnosis == solutions[case]:
+                        st.session_state[feedback_key] = {
+                            "type": "success",
+                            "msg": "✅ Richtig! Dieser Fall wurde bereits bewertet."
+                        }
+                    else:
+                        st.session_state[feedback_key] = {
+                            "type": "error",
+                            "msg": f"❌ Falsch. Dieser Fall wurde bereits bewertet. Richtige Lösung: {solutions[case]}"
+                        }
 
-            st.rerun()
-
-        fb = st.session_state.get("feedback")
+        fb = st.session_state.get(feedback_key)
         if fb:
             if fb["type"] == "success":
                 st.success(fb["msg"])
