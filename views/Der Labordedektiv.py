@@ -304,6 +304,21 @@ if "gram_done" not in st.session_state:
 if "selected_plate" not in st.session_state:
     st.session_state.selected_plate = None
 
+if "blood_started" not in st.session_state:
+    st.session_state.blood_started = False
+
+if "blood_done" not in st.session_state:
+    st.session_state.blood_done = False
+
+if "blood_loaded" not in st.session_state:
+    st.session_state.blood_loaded = False
+
+if "chem_done" not in st.session_state:
+    st.session_state.chem_done = False
+
+if "hema_done" not in st.session_state:
+    st.session_state.hema_done = False
+
 # =========================================================
 # 3) FALLDATEN Hier sind alle Falldaten aufgeführt (Patientenakten)
 # =========================================================
@@ -711,6 +726,11 @@ elif st.session_state.screen == "lab":
         st.session_state.feedback = None
         st.session_state.selected_plate = None
         st.session_state.selected_blood_param = None
+        st.session_state.blood_loaded = False
+        st. session_state.blood_done = False
+        st.session_state.blood_loaded = False
+        st.session_state.chem_done = False
+        st.session_state.hema_done = False
         reset_gram_game()
 
     # Sticky Header mit Fallname und Score + Zurück-Button
@@ -1233,7 +1253,7 @@ elif st.session_state.screen == "mikroskop":
         else:
             st.warning("Bitte führe zuerst die Gram-Färbung korrekt durch.")
 # -------------------------
-# BLUTBILD SCREEN
+# BLUTANALYSE SCREEN
 # -------------------------
 elif st.session_state.screen == "blutbild":
     case = st.session_state.case
@@ -1257,58 +1277,139 @@ elif st.session_state.screen == "blutbild":
     </div>
     """, unsafe_allow_html=True)
 
-    st.subheader("🧪 Blutwerte")
+    st.subheader("⚙️ Analyseablauf")
 
-    for param, val in values.items():
-        if param in REF:
-            low, high = REF[param]
-            flag_symbol = flag(val, low, high)
-            st.markdown(f"""
-            <div class="result-card">
-            {param}: <b>{val}</b> (Ref: {low}–{high}) <b>{flag_symbol}</b>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown(f"""
-            <div class="result-card">
-            {param}: <b>{val}</b>
-            </div>
-            """, unsafe_allow_html=True)
+    # Schritt 1: Probe laden
+    if not st.session_state.blood_loaded:
+        st.markdown("""
+        <div class="hint-card">
+        🧪 Lege die Blutprobe in das Analysegerät ein.
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.write("")
-    st.subheader("🩸 Differentialblutbild")
+        if st.button("🧪 Probe ins Analysegerät laden", key=f"load_blood_{case}"):
+            st.session_state.blood_loaded = True
+            st.rerun()
 
-    for param, val in diff.items():
-        if param in REF_BLOOD_DIFF:
-            low, high = REF_BLOOD_DIFF[param]
-            flag_symbol = flag(val, low, high)
-            st.markdown(f"""
+    else:
+        st.markdown("""
+        <div class="hint-card">
+        ✅ Probe geladen. Wähle nun die gewünschte Analyse.
+        </div>
+        """, unsafe_allow_html=True)
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("""
             <div class="result-card">
-            {param}: <b>{val}</b> (Ref: {low}–{high}) <b>{flag_symbol}</b>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown(f"""
-            <div class="result-card">
-            {param}: <b>{val}</b>
+            <b>🧪 Chemie-Analyzer</b><br>
+            Misst Entzündungswerte und Basisparameter.
             </div>
             """, unsafe_allow_html=True)
 
-    st.write("---")
-    st.subheader("🧾 Interpretation")
+            if not st.session_state.chem_done:
+                if st.button("▶️ Chemie-Analyse starten", key=f"start_chem_{case}"):
+                    st.session_state.chem_done = True
+                    st.rerun()
+            else:
+                st.markdown("""
+                <div class="hint-card">
+                ✅ Chemie-Analyse abgeschlossen
+                </div>
+                """, unsafe_allow_html=True)
 
-    for h in interpret_blood(diff):
-        st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
+        with col2:
+            st.markdown("""
+            <div class="result-card">
+            <b>🩸 Hämatologie-Analyzer</b><br>
+            Erstellt das Differentialblutbild.
+            </div>
+            """, unsafe_allow_html=True)
 
-    st.write("---")
+            if not st.session_state.hema_done:
+                if st.button("▶️ Hämatologie-Analyse starten", key=f"start_hema_{case}"):
+                    st.session_state.hema_done = True
+                    st.rerun()
+            else:
+                st.markdown("""
+                <div class="hint-card">
+                ✅ Hämatologie-Analyse abgeschlossen
+                </div>
+                """, unsafe_allow_html=True)
 
-    if st.button("📓 Ins Laborjournal übernehmen", key=f"journal_blood_{case}"):
-        st.session_state.lab_journal["Blutanalyse"] = []
+    # Chemie-Werte anzeigen
+    if st.session_state.chem_done:
+        st.write("")
+        st.subheader("🧪 Blutwerte")
 
         for param, val in values.items():
-            st.session_state.lab_journal["Blutanalyse"].append(f"{param}: {val}")
+            if param in REF:
+                low, high = REF[param]
+                flag_symbol = flag(val, low, high)
+                st.markdown(f"""
+                <div class="result-card">
+                {param}: <b>{val}</b> (Ref: {low}–{high}) <b>{flag_symbol}</b>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                <div class="result-card">
+                {param}: <b>{val}</b>
+                </div>
+                """, unsafe_allow_html=True)
+
+    # Hämatologie-Werte anzeigen
+    if st.session_state.hema_done:
+        st.write("")
+        st.subheader("🩸 Differentialblutbild")
 
         for param, val in diff.items():
-            st.session_state.lab_journal["Blutanalyse"].append(f"{param}: {val}")
+            if param in REF_BLOOD_DIFF:
+                low, high = REF_BLOOD_DIFF[param]
+                flag_symbol = flag(val, low, high)
+                st.markdown(f"""
+                <div class="result-card">
+                {param}: <b>{val}</b> (Ref: {low}–{high}) <b>{flag_symbol}</b>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                <div class="result-card">
+                {param}: <b>{val}</b>
+                </div>
+                """, unsafe_allow_html=True)
 
-        st.success("✅ Blutanalyse wurde ins Laborjournal übernommen!")
+    # Interpretation erst zeigen, wenn mindestens eine Analyse fertig ist
+    if st.session_state.chem_done or st.session_state.hema_done:
+        st.write("---")
+        st.subheader("🧾 Interpretation")
+
+        # Nur Diff auswerten, wenn Hämatologie fertig ist
+        if st.session_state.hema_done:
+            for h in interpret_blood(diff):
+                st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
+
+        # Zusätzliche Chemie-Hinweise
+        if st.session_state.chem_done:
+            if "CRP" in values and values["CRP"] > 100:
+                st.markdown("""<div class="hint-card">🧠 CRP stark erhöht → deutlicher Entzündungsprozess.</div>""", unsafe_allow_html=True)
+            if "PCT" in values and values["PCT"] > 0.5:
+                st.markdown("""<div class="hint-card">🧠 PCT erhöht → Hinweis auf bakterielle Infektion möglich.</div>""", unsafe_allow_html=True)
+            if "Leukos" in values and values["Leukos"] > 10:
+                st.markdown("""<div class="hint-card">🧠 Leukozyten erhöht → passt zu einer Entzündungsreaktion.</div>""", unsafe_allow_html=True)
+
+        st.write("---")
+
+        if st.button("📓 Ins Laborjournal übernehmen", key=f"journal_blood_{case}"):
+            eintraege = []
+
+            if st.session_state.chem_done:
+                for param, val in values.items():
+                    eintraege.append(f"{param}: {val}")
+
+            if st.session_state.hema_done:
+                for param, val in diff.items():
+                    eintraege.append(f"{param}: {val}")
+
+            st.session_state.lab_journal["Blutanalyse"] = eintraege
