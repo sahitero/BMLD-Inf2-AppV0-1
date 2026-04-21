@@ -737,7 +737,7 @@ def reset_gram_game():
 # HOME SCREEN  Hier sollte die Begrüßung, eine kurze Einführung in das Spiel und ein Start-Button angezeigt werden. Es könnte auch ein Hinweis auf den aktuellen Score oder Fortschritt der Spieler geben, damit sie motiviert bleiben, weiterzuspielen.
 # -------------------------
 if st.session_state.screen == "home":
-    st.title("🧪 Lab Diagnose Game 🎀")
+    st.title("🧪 Lab Diagnose Game")
     st.write("Willkommen im biomedizinischen Labor!")
 
     st.markdown(f"""
