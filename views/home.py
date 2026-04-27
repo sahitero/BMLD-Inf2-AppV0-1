@@ -49,8 +49,21 @@ if st.session_state.screen == "home":
         """, unsafe_allow_html=True)
 
     # Der zentrale Start-Button
+    st.markdown("""
+    <style>
+    .stButton button {
+        background-color: #FFD6E8;
+        color: #4B0082 !important; 
+        border-radius: 22px;
+        border: none;
+        padding: 0.6em 1.1em;
+        font-weight: 700;           
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     st.write("---")
-    if st.button("Jetzt Ermittlung starten! 🚀", use_container_width=True):
+    if st.button("Jetzt Ermittlung starten!", use_container_width=True):
         st.switch_page("views/Der Labordetektiv.py")
 
     # Autoren dezent im Footer

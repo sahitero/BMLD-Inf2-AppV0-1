@@ -13,7 +13,7 @@ wobei die App jederzeit lauffähig bleibt.
 
 2. Priorisierung der Funktionen
 
-Must-Have (essenziell)
+Must-Have (Minimum Viable Product)
 Diese Funktionen sind notwendig, damit die App funktioniert:
 
 - Navigation zwischen Screens (Home, Level, Lab)
@@ -44,11 +44,13 @@ Diese Funktionen machen die App „besonders“ & spannender:
 
 # Version 1
 Das Grundgerüst der App aufbauen, um damit weiterarbeiten zu können
+
 ## V0.1
 Grundstruktur der Streamlit-App mit Startdatei und leerer Oberfläche
 
 ## V1.0
 Einfache Benutzeroberfläche mit Titel, Navigation und ersten Eingabefeldern
+
 
 # Version 2
 Ziel: MVP (Minimum Viable Product), Ziel ist es die Grundfunktionalität sicherzustellen
@@ -61,8 +63,9 @@ Fokus liegt auf der technischen Funktionsfähigkeit der App
 ## V2.0
 Schreiben der Codes für die interaktiven Laborarbeiten
 
-## V3.0
+## V2.1
 Aufteilung der Anwendung in mehrere Seiten (Navigation mit Views)
+
 
 # Version 3
 Ziel: Die Nutzerfreundlichkeit erhöhen 
@@ -71,32 +74,39 @@ Basierend auf dem Nutzertest werden folgende Verbesserungen umgesetzt:
 -	Hinzufügen klarere Hinweise (Erleichterung der nächsten Handlungsschritte)
 -	Feedback-System (richtig/falsch) (Unterstützung Lernprozess)
 -	Optimierung der Navigation
-Fokus liegt auf Verständlichkeit und User Experience
+Fokus liegt auf Nutzerfreundlichkeit und Lernerfolg
 
-## V4.0
-Anzeige und Interpretation der berechneten Ergebnisse/ Laborresultate für den Benutzer
+## V3.0
+Anzeige der berechneten Ergebnisse/ Laborresultate für den Benutzer mit kurzer Interpretation als Hilfe
+
+## V3.1
+Feedbacksystem einbauen mit Korrekturhinweisen bei Nutzerentscheidungen
+
+## V3.2
+Download der Laborresultate inklusive Referenzbereich ermöglichen (PDF)
+
 
 # Version 4
-Ziel: App attraktiver und interaktiver machen
+Ziel: App attraktiver machen
 -	Tutorial für Einsteiger (hilft bei der Erstbenutzung der App)
 -	Evtl eine Fortschrittsanzeige (für mehr und klarere Orientierung)
 -	Glossar für die Begriffe (Unterstütz fachliches Verständnis)
--	Erweiterte Gamification (Punktesystem, Level-Syste, Unlock-System, Achievements etc.) (erhöht Engagement und Motivation)
+-	Erweiterte Gamification (Punktesystem, Level-Syste, Unlock-System, Achievements etc.), erhöht Engagement und Motivation
 -	Speicherung der Spielerdaten (um richtiges Gamegefühl zu bekommen)
 -	Erweiterung des Designs, um es visuell attraktiver zu machen
 Fokus liegt auf langfristiger Nutzung und Erweiterbarkeit
 
-## V5.0
+## V4.0
 Erweiterung um medizinische Hinweise, Hintergrundinformationen und Empfehlungen basierend auf den Diagnosen
 
-## V6.0
-Darstellung der Verlaufsdaten in Form einer Tabelle und eines Diagramms
+## V4.1
+Darstellung der Verlaufsdaten in Form einer Tabelle und eines Diagramms, Erfolgskurve, Auszeichnungen für richtige Diagnosen
 
-## V7.0
-Persistente Speicherung der Daten über den DataManager (z. B. CSV-Dateien)
+## V4.2
+Persistente Speicherung der Daten über den DataManager (z.B CSV-Dateien)
 
-## V8.0
-Verbesserung der Benutzeroberfläche durch individuelles Styling und optimierte Benutzerführung
+## V4.3
+Finalisierung des visuellen Stils und letzte Korrekturen an der Benutzerführung für ein flüssiges Spielerlebnis
 
 
 

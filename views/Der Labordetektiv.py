@@ -755,13 +755,19 @@ if st.session_state.screen == "home":
 # LEVEL SCREEN, Hier sollte die Aufführung alles Fälle sein, damit die Spieler einen Fall auswählen können. Es sollte auch der aktuelle Score angezeigt werden.
 # -------------------------
 elif st.session_state.screen == "level":
-    st.title("Fall auswählen")
-
     st.markdown(f"""
     <div class="hint-card">
     🎯 <b>Score:</b> {st.session_state.score}
     </div>
     """, unsafe_allow_html=True)
+
+    st.title("Fall auswählen")
+
+    if st.button("🔙 Zurück zum Home", key="back_level"):
+        st.session_state.screen = "home"
+        st.rerun()
+
+    st.write("---")
 
     case_preview = {
     "Fall 1": "Schwerer Infekt mit Fieber",
@@ -786,9 +792,7 @@ elif st.session_state.screen == "level":
                 st.session_state.selected_plate = None
                 reset_gram_game()
                 st.rerun()
-    if st.button("🔙 Zurück zum Home", key="back_level"):
-        st.session_state.screen = "home"
-        st.rerun()
+
 # -------------------------
 # LAB SCREEN zur Fallbearbeitung, hier sollten die Patientendaten, die Auswahl der Laborstationen und die Diagnoseoptionen angezeigt werden. Je nachdem, welche Laborstationen freigeschaltet wurden, sollten die entsprechenden Ergebnisse/Hinweise angezeigt werden. Es sollte auch die Möglichkeit geben, zur Level-Auswahl zurückzukehren.
 # -------------------------
@@ -853,7 +857,7 @@ elif st.session_state.screen == "lab":
         </div>
         """, unsafe_allow_html=True)
 
-        st.subheader("🧠 Diagnose (bitte wählen)")
+        st.subheader("🧠 Diagnose")
         diag_options = ["— bitte wählen —"] + DIAG_CHOICES
 
         feedback_key = f"feedback_{case}"
@@ -1232,16 +1236,14 @@ elif st.session_state.screen == "mikroskop":
         st.session_state.screen = "lab"
         st.rerun()
 
-    st.markdown(f"""
-    <div class="microscope-box">
-        <span class="big-emoji">🔬</span>
-        <h3>Mikroskopischer Eindruck</h3>
-        <p>{microscope_info[case]["view"]}</p>
-    </div>
-    """, unsafe_allow_html=True)
-
     st.subheader("🎮 Gram-Färbung Mini-Spiel")
     st.write("Wähle die Schritte in der richtigen Reihenfolge:")
+
+    st.markdown(f"""
+        <div class="hint-card">
+        <b>🧪 {microscope_info[case]["sample"]}</b>
+        </div>
+        """, unsafe_allow_html=True)
 
     c1, c2, c3, c4 = st.columns(4)
 
@@ -1328,10 +1330,13 @@ elif st.session_state.screen == "mikroskop":
         )
 
         st.markdown(f"""
-        <div class="hint-card">
-        <b>🧪 {microscope_info[case]["sample"]}</b>
+        <div class="microscope-box">
+            <span class="big-emoji"/span>
+            <h3>Mikroskopischer Eindruck</h3>
+            <p>{microscope_info[case]["view"]}</p>
         </div>
         """, unsafe_allow_html=True)
+
     else:
         st.markdown("""
         <div class="hint-card">
