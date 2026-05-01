@@ -28,7 +28,7 @@ if st.session_state.screen == "home":
         st.markdown("""
         <div class="hint-card" style="min-height: 10px;">
         <b>1. Akte wählen</b><br>
-        Such dir einen der 6 spannenden Fälle aus.
+        Suche dir einen der sechs spannenden Fälle aus.
         </div>
         """, unsafe_allow_html=True)
 
@@ -36,7 +36,7 @@ if st.session_state.screen == "home":
         st.markdown("""
         <div class="hint-card" style="min-height: 10px;">
         <b>2. Laborbesuch</b><br>
-        Nutze Mikroskop, Agarplatten oder das Blutbild.
+        Nutze Informationen von Mikroskop, Agarplatten und dem Blutbild.
         </div>
         """, unsafe_allow_html=True)
 

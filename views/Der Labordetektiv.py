@@ -517,37 +517,37 @@ microscope_info = {
         "view": "Grampositive Kokken in Haufen. Das spricht eher für Staphylokokken.",
         "gram_type": "Gram-positiv",
         "image": "images/fall1_mikro.png",
-        "sample": "Probe: Eiter aus einer Hautabszess-Läsion."
+        "sample": "Probe: Eiter aus einer Hautabszess-Läsion"
     },
     "Fall 2": {
         "view": "Grampositive Kokken in Ketten. Das spricht eher für Streptokokken.",
         "gram_type": "Gram-positiv",
         "image": "images/fall2_mikro.png",
-        "sample": "Probe: Rachenabstrich."
+        "sample": "Probe: Rachenabstrich"
     },
     "Fall 3": {
         "view": "Gramnegative Stäbchen sind sichtbar.",
         "gram_type": "Gram-negativ",
         "image": "images/fall3_mikro.png",
-        "sample": "Probe: Mittelstrahlurin."
+        "sample": "Probe: Mittelstrahlurin"
     },
     "Fall 4": {
         "view": "Auffälliges, strukturiertes Ei, passend zu einem Helminthen.",
         "gram_type": "Nicht sinnvoll",
         "image": "images/fall4_mikro.png",
-        "sample": "Probe: Stuhlprobe."
+        "sample": "Probe: Stuhl"
     },
     "Fall 5": {
         "view": "Grampositive Kokken erkennbar.",
         "gram_type": "Gram-positiv, aber unspezifisch",
         "image": "images/fall5_mikro.png",
-        "sample": "Probe: Liquor."
+        "sample": "Probe: Liquor"
     },
     "Fall 6": {
         "view": "Sprosszellen und Hyphen, vereinbar mit einem Hefepilz.",
         "gram_type": "Nicht typisch / Pilzverdacht",
         "image": "images/fall6_mikro.png",
-        "sample": "Probe: Vaginalabstrich."
+        "sample": "Probe: Vaginalabstrich"
     }
 }
 
@@ -658,18 +658,23 @@ solutions = {
 }
 # Hier sind die Diagnoseoptionen, die in der Auswahlbox angezeigt werden. Sie sollten alle möglichen Diagnosen enthalten, damit die Spieler eine Auswahl treffen können. Einige Fälle sind als Verwirrung hier
 DIAG_CHOICES = [
+    #Bakterien
     "Staphylococcus aureus",
     "Staphylococcus epidermidis",
     "Streptococcus pyogenes",
     "Escherichia coli",
     "Klebsiella pneumoniae",
     "Pseudomonas aeruginosa",
+    #Pilze
     "Candida spp.",
+    #Viren
     "Virale Infektion (z.B. Influenza)",
-    "EBV / Mononukleose",
-    "Allergische Reaktion / Hypersensitivität",
+    "EBV (Mononukleose)",
+    #Parasiten
     "Helmintheninfektion",
-    "Giardiasis (Protozoen)",
+    "Giardien (Protozoen)",
+    #Krankheiten
+    "Allergische Reaktion / Hypersensitivität",
     "Akutes Koronarsyndrom",
     "Pneumonie (bakteriell)",
     "Pneumonie (viral)",
