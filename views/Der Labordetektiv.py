@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Diese Zeile stellt die App auf die volle Breite ein
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title="Der Labordetektiv", page_icon="🔬")
 
 st.markdown("""
 <style>
@@ -799,253 +799,94 @@ elif st.session_state.screen == "lab":
     case = st.session_state.case
     data = cases[case]
 
-    
-    if st.button("← Zurück", key=f"header_back_{case}"):
-        st.session_state.screen = "level"
-        st.rerun()
-
-    # reset unlocked + feedback bei Fallwechsel
-    if "last_case" not in st.session_state or st.session_state.last_case != case:
-        st.session_state.unlocked = {
-            "Mikroskop": False,
-            "Kultur & Tests": False,
-            "Blutanalyse": False
-        } # Alle Stationen bei Fallwechsel wieder sperren
-        st.session_state.lab_journal = {
-            "Mikroskop": [],
-            "Kultur & Tests": [],
-            "Blutanalyse": []
-        } # Labortagebuch bei Fallwechsel zurücksetzen
-        st.session_state.gram_done = False
-        st.session_state.last_case = case
-        st.session_state.feedback = None
-        st.session_state.selected_plate = None
-        st.session_state.selected_blood_param = None
-        st.session_state.blood_loaded = False
-        st. session_state.blood_done = False
-        st.session_state.blood_loaded = False
-        st.session_state.chem_done = False
-        st.session_state.hema_done = False
-        reset_gram_game()
-
-    # Sticky Header mit Fallname und Score + Zurück-Button
+    # --- 1. HEADER (Oben fixiert) ---
     st.markdown('<div class="app-header">', unsafe_allow_html=True)
     st.markdown('<div class="header-row"><div class="header-left">', unsafe_allow_html=True)
-
-    # Anzeige des Fallnamens in einem Pill-Style
+    if st.button("← Fallauswahl", key="back_to_lvl"):
+        st.session_state.screen = "level"
+        st.rerun()
     st.markdown(f'<div class="header-pill">🧪 {case}</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="header-score">🎯 Score: {st.session_state.score}</div>', unsafe_allow_html=True)
-    st.markdown('</div></div>', unsafe_allow_html=True)
+    st.markdown('</div></div></div>', unsafe_allow_html=True)
 
-    left, right = st.columns([0.85, 1.7], gap="large")
-
-        # ---------- LEFT ---------- hier sollten die Patientendaten und die Diagnoseoptionen angezeigt werden
-    with left:
+    # --- 2. SÜSSES DROPDOWN FÜR DIE PATIENTENAKTE ---
+    # Wir nutzen ein Expander-Emoji und das Design deiner "Cute-Card"
+    with st.expander(f"📖 Patientenakte von {data['name']} nachlesen", expanded=False):
         st.markdown(f"""
         <div class="cute-card">
-        <h4>📄 Patientenakte</h4>
-
-        <div class="patient-story">{data["story"]}</div>
-
-        <hr>
-
-        <b>Name:</b> {data["name"]}<br>
-        <b>Alter:</b> {data["age"]}<br>
-        <b>Geschlecht:</b> {data["sex"]}<br>
-        <b>Symptome:</b> {data["symptoms"]}
+            <h4>📄 Anamnese & Bericht</h4>
+            <p style="font-style: italic;">"{data['story']}"</p>
+            <hr>
+            <b>Patient:</b> {data['name']} ({data['age']} Jahre, {data['sex']})<br>
+            <b>Symptome:</b> {data['symptoms']}
         </div>
         """, unsafe_allow_html=True)
 
-        st.subheader("🧠 Diagnose (bitte wählen)")
-        diag_options = ["— bitte wählen —"] + DIAG_CHOICES
+    st.write("") # Kleiner Abstand
 
-        feedback_key = f"feedback_{case}"
-        # Diagnoseformular mit Feedback-Mechanismus: Hier wird ein Formular erstellt, in dem die Spieler ihre Diagnose auswählen können. Sobald sie ihre Auswahl treffen und das Formular absenden, wird überprüft, ob die Diagnose korrekt ist. Basierend auf der Richtigkeit der Diagnose werden Punkte vergeben oder abgezogen, und eine Nachricht wird angezeigt, die den Spielern Rückmeldung zu ihrer Auswahl gibt.
-        with st.form(key=f"diag_form_{case}", clear_on_submit=False):
-            diagnosis = st.selectbox(
-                "Was ist am wahrscheinlichsten?",
-                diag_options,
-                index=0,
-                key=f"diag_{case}"
-            )
-            submitted = st.form_submit_button("✅ Diagnose abgeben")
-            # Feedback-Mechanismus: Punktevergabe und Anzeige von Hinweisen basierend auf der Auswahl der Diagnose. Es wird überprüft, ob die Diagnose korrekt ist, und entsprechend Punkte vergeben oder abgezogen. Zusätzlich wird eine Nachricht angezeigt, die den Spielern Rückmeldung zu ihrer Auswahl gibt.
-        if submitted:
-            if diagnosis == "— bitte wählen —":
-                st.session_state[feedback_key] = {
-                    "type": "warning",
-                    "msg": "Bitte zuerst eine Diagnose auswählen 🙂"
-                }
-            else:
-                if case not in st.session_state.scored_cases:
-                    if diagnosis == solutions[case]:
-                        st.session_state.score += 10
-                        st.session_state[feedback_key] = {
-                            "type": "success",
-                            "msg": "✅ Richtig! +10 Punkte"
-                        }
-                    else:
-                        st.session_state.score -= 5
-                        st.session_state[feedback_key] = {
-                            "type": "error",
-                            "msg": f"❌ Falsch. Richtige Lösung: {solutions[case]} (-5 Punkte)"
-                        }
+    # --- 3. REIHE: LABORSTATIONEN (Breit verteilt) ---
+    st.write("### 🔬 Laborstationen")
+    col1, col2, col3 = st.columns(3, gap="medium")
 
-                    st.session_state.scored_cases[case] = True
-                else:
-                    if diagnosis == solutions[case]:
-                        st.session_state[feedback_key] = {
-                            "type": "success",
-                            "msg": "✅ Richtig! Dieser Fall wurde bereits bewertet."
-                        }
-                    else:
-                        st.session_state[feedback_key] = {
-                            "type": "error",
-                            "msg": f"❌ Falsch. Dieser Fall wurde bereits bewertet. Richtige Lösung: {solutions[case]}"
-                        }
+    with col1:
+        st.markdown(f'<div class="station-card"><div class="station-icon">🔬</div><div class="station-title">Mikroskop</div><div class="station-sub">Gram-Färbung</div><div class="station-badge">{"✅ Offen" if st.session_state.unlocked["Mikroskop"] else "🔒 Zu"}</div></div>', unsafe_allow_html=True)
+        if st.button("Mikroskop öffnen", key="btn_mic", use_container_width=True):
+            st.session_state.unlocked["Mikroskop"] = True
+            st.session_state.screen = "mikroskop"
+            st.rerun()
 
-        fb = st.session_state.get(feedback_key)
-        if fb:
-            if fb["type"] == "success":
-                st.success(fb["msg"])
-            elif fb["type"] == "error":
-                st.error(fb["msg"])
-            else:
-                st.warning(fb["msg"])
-    # ---------- RIGHT ----------
-        # ---------- RIGHT ---------- hier sollten die Laborstationen und die Ergebnisse/Hinweise angezeigt werden, abhängig davon, welche Stationen freigeschaltet wurden
-    with right:
-        top1, top2 = st.columns([6, 1])
+    with col2:
+        st.markdown(f'<div class="station-card"><div class="station-icon">🧫</div><div class="station-title">Kultur & Tests</div><div class="station-sub">Agarplatten</div><div class="station-badge">{"✅ Offen" if st.session_state.unlocked["Kultur & Tests"] else "🔒 Zu"}</div></div>', unsafe_allow_html=True)
+        if st.button("Kultur öffnen", key="btn_cul", use_container_width=True):
+            st.session_state.unlocked["Kultur & Tests"] = True
+            st.session_state.screen = "agar"
+            st.rerun()
 
-        with top1:
-            st.subheader("🔬 Laborstationen")
+    with col3:
+        st.markdown(f'<div class="station-card"><div class="station-icon">🩸</div><div class="station-title">Blutanalyse</div><div class="station-sub">Laborwerte</div><div class="station-badge">{"✅ Offen" if st.session_state.unlocked["Blutanalyse"] else "🔒 Zu"}</div></div>', unsafe_allow_html=True)
+        if st.button("Blut öffnen", key="btn_bld", use_container_width=True):
+            st.session_state.unlocked["Blutanalyse"] = True
+            st.session_state.screen = "blutbild"
+            st.rerun()
 
-        with top2:
-            if st.button("❓", key="help_lab"):
-                st.session_state.show_help = not st.session_state.show_help
-        # Hilfekarte mit Erklärung zum Spielablauf und den Laborstationen: Hier wird eine Karte angezeigt, die den Spielern eine kurze Einführung in den Spielablauf gibt und erklärt, wie die verschiedenen Laborstationen funktionieren. Diese Karte soll den Spielern helfen, sich zurechtzufinden und zu verstehen, wie sie die Informationen aus den Laborstationen nutzen können, um die richtige Diagnose zu stellen.
-        if st.session_state.show_help:
-            st.markdown("""
-            <div class="hint-card">
-            <b>🧪 So funktioniert das Spiel:</b><br><br>
-            1. Wähle einen Fall aus und lies die Patientenakte.<br>
-            2. Öffne Laborstationen und sammle Befunde.<br>
-            3. Übernimm wichtige Resultate ins Laborjournal.<br>
-            4. Nutze das Journal, um die wahrscheinlichste Diagnose auszuwählen.<br><br>
+    st.markdown("---")
 
-            <b>🔬 Laborstationen:</b><br>
-            • <b>Mikroskop</b>: Morphologie und Gram-Färbung<br>
-            • <b>🧫 Kultur & Tests</b>: Agarplatten, Katalase, Koagulase, Hämolyse<br>
-            • <b>🩸 Blutanalyse</b>: Blutwerte und Differentialblutbild<br><br>
+    # --- 4. REIHE: JOURNAL (Links) UND DIAGNOSE (Rechts) ---
+    left_col, right_col = st.columns([1.5, 1], gap="large")
 
-            <b>🎯 Ziel:</b><br>
-            Kombiniere die Befunde richtig und finde die passende Diagnose.
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.write("Tippe, um Stationen freizuschalten:")
-
-        cols = st.columns(3, gap="medium")
-
-        with cols[0]:
-            st.markdown(f"""
-            <div class="station-wrap">
-                <div class="station-card">
-                    <div>
-                        <div class="station-icon">🔬</div>
-                        <div class="station-title">Mikroskop</div>
-                        <div class="station-sub">
-                            Gram-Färbung<br>
-                            Morphologie
-                        </div>
-                    </div>
-                    <div class="station-badge">{'✅ freigeschaltet' if st.session_state.unlocked['Mikroskop'] else '🔒 noch zu öffnen'}</div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            if st.button("Mikroskop öffnen", key=f"open_mic_{case}", use_container_width=True):
-                st.session_state.unlocked["Mikroskop"] = True
-                st.session_state.screen = "mikroskop"
-                reset_gram_game()
-                st.rerun()
-        # Hinweis: Die Funktion reset_gram_game() wird aufgerufen, um den Fortschritt des Gram-Spiels zurückzusetzen, wenn die Mikroskop-Station geöffnet wird. Dadurch wird sichergestellt, dass die Spieler jedes Mal von vorne beginnen, wenn sie die Mikroskop-Station betreten, und es verhindert mögliche Verwirrung durch vorherige Ergebnisse oder Schritte im Gram-Spiel.
-        with cols[1]:
-            st.markdown(f"""
-            <div class="station-wrap">
-                <div class="station-card">
-                    <div>
-                        <div class="station-icon">🧫</div>
-                        <div class="station-title">Kultur & Tests</div>
-                        <div class="station-sub">
-                            Agarplatten<br>
-                            Katalase / Koagulase
-                        </div>
-                    </div>
-                    <div class="station-badge">{'✅ freigeschaltet' if st.session_state.unlocked['Kultur & Tests'] else '🔒 noch zu öffnen'}</div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            if st.button("Kultur & Tests öffnen", key=f"open_kultur_{case}", use_container_width=True):
-                st.session_state.unlocked["Kultur & Tests"] = True
-                st.session_state.screen = "agar"
-                st.session_state.selected_plate = None
-                st.rerun()
-
-        with cols[2]:
-            st.markdown(f"""
-            <div class="station-wrap">
-                <div class="station-card">
-                    <div>
-                        <div class="station-icon">🩸</div>
-                        <div class="station-title">Blutanalyse</div>
-                        <div class="station-sub">
-                            CRP / PCT / Leukos<br>
-                            Diff-BB / Interpretation
-                        </div>
-                    </div>
-                    <div class="station-badge">{'✅ freigeschaltet' if st.session_state.unlocked['Blutanalyse'] else '🔒 noch zu öffnen'}</div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            if st.button("Blutanalyse öffnen", key=f"open_blut_{case}", use_container_width=True):
-                st.session_state.unlocked["Blutanalyse"] = True
-                st.session_state.screen = "blutbild"
-                st.session_state.selected_blood_param = None
-                st.rerun()
-
-        st.write("---")
-        st.subheader("📓 Laborjournal")
-
+    with left_col:
+        st.write("### 📓 Laborjournal")
         journal = st.session_state.lab_journal
-
-        journal_html = """
-        <div class="journal-card">
-            <div class="journal-title">📓 Mein Laborheft</div>
-        """
-
+        journal_html = '<div class="journal-card"><div class="journal-title">📓 Mein Laborheft</div>'
         if any(journal.values()):
-            for section, entries in journal.items():
+            for sec, entries in journal.items():
                 if entries:
-                    journal_html += f'<div class="journal-section">{section}</div>'
-                    for entry in entries:
-                        journal_html += f'<div class="journal-entry">• {entry}</div>'
+                    journal_html += f'<div class="journal-section">{sec}</div>'
+                    for e in entries: journal_html += f'<div class="journal-entry">• {e}</div>'
         else:
-            journal_html += '<div class="journal-entry">Noch keine Einträge vorhanden.</div>'
-
-        journal_html += "</div>"
-
+            journal_html += '<div class="journal-entry">Noch keine Einträge.</div>'
+        journal_html += '</div>'
         st.markdown(journal_html, unsafe_allow_html=True)
 
-        if not any(st.session_state.unlocked.values()):
-            st.markdown("""
-            <div class="hint-card">
-            Noch keine Station gewählt. Tippe auf eine Station oben.
-            </div>
-            """, unsafe_allow_html=True)
+    with right_col:
+        st.write("### 🧠 Finale Diagnose")
+        # Das helle Design für die Selectbox wird durch dein CSS automatisch angewendet
+        with st.form(key="final_diag"):
+            diag = st.selectbox("Was ist deine Diagnose?", ["— bitte wählen —"] + DIAG_CHOICES)
+            submit = st.form_submit_button("✅ Diagnose abgeben")
+            
+            # Die Logik für das Feedback (Punktevergabe) bleibt hier erhalten
+            if submit and diag != "— bitte wählen —":
+                feedback_key = f"feedback_{case}"
+                if case not in st.session_state.scored_cases:
+                    if diag == solutions[case]:
+                        st.session_state.score += 10
+                        st.session_state[feedback_key] = {"type": "success", "msg": "✅ Richtig! +10 Punkte"}
+                    else:
+                        st.session_state.score -= 5
+                        st.session_state[feedback_key] = {"type": "error", "msg": f"❌ Falsch! Lösung: {solutions[case]}"}
+                    st.session_state.scored_cases[case] = True
+                    st.rerun()
 
 # -------------------------
 # AGAR SCREEN
