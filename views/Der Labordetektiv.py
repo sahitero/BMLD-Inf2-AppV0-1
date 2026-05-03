@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 
+# Diese Zeile stellt die App auf die volle Breite ein
+st.set_page_config(layout="wide")
+
 st.markdown("""
 <style>
 /* App Hintergrund: De ganze Hintergrund wird in sone pinklichi farb */
@@ -796,6 +799,11 @@ elif st.session_state.screen == "lab":
     case = st.session_state.case
     data = cases[case]
 
+    
+    if st.button("← Zurück", key=f"header_back_{case}"):
+        st.session_state.screen = "level"
+        st.rerun()
+
     # reset unlocked + feedback bei Fallwechsel
     if "last_case" not in st.session_state or st.session_state.last_case != case:
         st.session_state.unlocked = {
@@ -823,10 +831,6 @@ elif st.session_state.screen == "lab":
     # Sticky Header mit Fallname und Score + Zurück-Button
     st.markdown('<div class="app-header">', unsafe_allow_html=True)
     st.markdown('<div class="header-row"><div class="header-left">', unsafe_allow_html=True)
-
-    if st.button("← Zurück", key=f"header_back_{case}"):
-        st.session_state.screen = "level"
-        st.rerun()
 
     # Anzeige des Fallnamens in einem Pill-Style
     st.markdown(f'<div class="header-pill">🧪 {case}</div>', unsafe_allow_html=True)
@@ -1050,6 +1054,10 @@ elif st.session_state.screen == "agar":
     case = st.session_state.case
     plate = st.session_state.get("selected_plate", None)
 
+    if st.button("← Zurück zum Labor", key=f"back_from_agar_{case}"):
+        st.session_state.screen = "lab"
+        st.rerun()
+
     st.markdown("""
     <div class="screen-box">
         <h1 style="text-align:center;">🧫 Kultur & Tests</h1>
@@ -1057,9 +1065,6 @@ elif st.session_state.screen == "agar":
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("← Zurück zum Labor", key=f"back_from_agar_{case}"):
-        st.session_state.screen = "lab"
-        st.rerun()
 
     st.markdown("""
     <div class="path-card">
@@ -1228,16 +1233,16 @@ elif st.session_state.screen == "agar":
 elif st.session_state.screen == "mikroskop":
     case = st.session_state.case
 
+    if st.button("← Zurück zum Labor", key=f"back_from_mic_{case}"):
+        st.session_state.screen = "lab"
+        st.rerun()
+
     st.markdown("""
     <div class="screen-box">
         <h1 style="text-align:center;">🔬 Mikroskop</h1>
         <p style="text-align:center;">Beobachte die Probe und führe danach die Gram-Färbung durch.</p>
     </div>
     """, unsafe_allow_html=True)
-
-    if st.button("← Zurück zum Labor", key=f"back_from_mic_{case}"):
-        st.session_state.screen = "lab"
-        st.rerun()
 
     st.markdown(f"""
     <div class="microscope-box">
@@ -1369,6 +1374,10 @@ elif st.session_state.screen == "blutbild":
     values = blood_values[case]
     diff = blood_diff[case]
 
+    if st.button("← Zurück zum Labor", key=f"back_from_blood_{case}"):
+        st.session_state.screen = "lab"
+        st.rerun()
+
     st.markdown("""
     <div class="screen-box">
         <h1 style="text-align:center;">🩸 Blutanalyse</h1>
@@ -1376,9 +1385,6 @@ elif st.session_state.screen == "blutbild":
     </div>
     """, unsafe_allow_html=True)
 
-    if st.button("← Zurück zum Labor", key=f"back_from_blood_{case}"):
-        st.session_state.screen = "lab"
-        st.rerun()
 
     st.markdown("""
     <div class="path-card">
