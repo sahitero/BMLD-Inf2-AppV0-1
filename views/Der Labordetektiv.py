@@ -1,70 +1,275 @@
-from click import style
 import streamlit as st
 import pandas as pd
 
-# =========================================================
-# 0) APP SETTINGS  Hier sind Informationen über die Startseite des Spiels
-# =========================================================
-
-# =========================================================
-# 1) CSS STYLES  Hier werden alle CSS-Styles definiert, die für die Gestaltung der App verwendet werden. Diese Styles sorgen dafür, dass die App ansprechend aussieht und eine gute Benutzererfahrung bietet. Es ist wichtig, dass die Styles konsistent und gut durchdacht sind, damit die App professionell wirkt und die Spieler gerne darin spielen.
-# =========================================================
-# Zusätzliche Styles für die speziellen Karten und Elemente
 st.markdown("""
 <style>
-
-/* --- App Hintergrund --- */
+/* App Hintergrund: De ganze Hintergrund wird in sone pinklichi farb */
 .stApp {
     background-color: #FFB3D1;
 }
 
-/* --- Globale Textfarben --- */
-h1, h2, h3, p, span, div, label {
+/* Globale Textfarben: Es isch sone dunkles Lila aber im moment sind es paar Problemi bim drufklicke ksed man nid was es isch*/
+h1, p, span, div {
     color: #4B0082 !important;
 }
 
-/* --- Hauptcontainer etwas schöner --- */
-.block-container {
-    padding-top: 2rem;
-}
-
-/* --- Standard Cards --- */
+/*Standard Cards: Design für die Patientenakte/Informationen*/
 .cute-card {
     background-color: #FFE4F1;
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
     margin-bottom: 12px;
-    border: 2px solid #F7C4DD;
 }
-
+            
+/* Design für die Ergebnisse fo de Tests, z.Bsp. Mikroskopischer Eindruck, Agarplatten-Ergebnisse, Blutwerte */           
 .result-card {
-    background-color: #F7EDFF;
-    padding: 18px 22px;
-    border-radius: 22px;
-    box-shadow: 0px 4px 14px rgba(75,0,130,0.10);
-    border: 2px solid #E0C7FF;
-    margin: 14px 0px;
+    background-color: #E6F7FF;
+    padding: 15px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.06);
+}
+            
+/* Design für die Hinweise
+    background-color: #F3E8FF;
+    padding: 12px 14px;
+    border-radius: 18px;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.06);
 }
 
-.hint-card {
-    background-color: #FFF4FA;
-    padding: 18px 22px;
+/* Standard Buttons */
+div.stButton > button {
+    background-color: #FFD6E8;
+    color: #4B0082 !important; /* Lila Text auf hellem Grund */
     border-radius: 22px;
-    border: 2px dashed #F7C4DD;
-    margin: 14px 0px;
+    border: none;
+    padding: 0.6em 1.1em;
+    font-weight: 700;
 }
 
-.machine-box {
-    background-color: #FFF7FC;
-    padding: 24px 28px;
+/* Hover-Effekt fixen */
+div.stButton > button:hover {
+    background-color: #4B0082 !important; /* Dunkler Hintergrund */
+    color: white !important; /* WEISSER Text, damit man ihn sieht! */
+}
+
+/* Verhindert, dass die globalen lila Textregeln den Button-Text beim Hover überschreiben */
+div.stButton > button:hover p, 
+div.stButton > button:hover span, 
+div.stButton > button:hover div {
+    color: white !important;
+}
+
+/* Sticky App Header*/ /* Design für den App-Header, der auf allen Screens sichtbar ist. Er enthält den aktuellen Fallnamen, den Score und einen Button, um zurück zur Fallauswahl zu gelangen. Der Header ist sticky, damit er immer sichtbar bleibt, auch wenn die Spieler nach unten scrollen. Ein halbtransparenter Hintergrund mit einem leichten Blur-Effekt sorgt dafür, dass der Header sich vom restlichen Inhalt abhebt, ohne zu dominant zu wirken. */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: rgba(255, 179, 209, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 10px 6px 12px 6px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    margin-bottom: 10px;
+}
+.header-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.header-left {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.header-pill {
+    background-color: #F3E8FF;
+    border-radius: 999px;
+    padding: 6px 12px;
+    display: inline-block;
+    box-shadow: 0px 6px 16px rgba(0,0,0,0.08);
+    font-weight: 800;
+    color: #4B0082 !important;
+}
+.header-score {
+    background-color: #E6F7FF;
+    border-radius: 999px;
+    padding: 6px 12px;
+    display: inline-block;
+    box-shadow: 0px 6px 16px rgba(0,0,0,0.08);
+    font-weight: 800;
+    color: #4B0082 !important;
+}
+.app-header div.stButton > button {
+    background-color: #FFE4F1 !important;
+    color: #4B0082 !important;
+    border-radius: 999px !important;
+    padding: 0.45em 1.0em !important;
+    font-weight: 800 !important;
+    border: none !important;
+    box-shadow: 0px 6px 16px rgba(0,0,0,0.08) !important;
+}
+.app-header div.stButton > button:hover {
+    background-color: #4B0082 !important;
+    color: white !important;
+}
+
+/* Laborstationen im Lab-Screen */ /* Design für die Karten, die die verschiedenen Laborstationen repräsentieren (Mikroskop, Agarplatten, Blutanalyse). Jede Karte hat ein eigenes Farbschema, das sie von den anderen unterscheidet, aber alle Karten haben einen ähnlichen Stil mit abgerundeten Ecken, Schatten und einem klaren Layout, um die Informationen übersichtlich darzustellen. Die Karten enthalten auch einen Titel, eine kurze Beschreibung und einen Button, um die Station zu betreten. */
+.station-card {
+    background: #FFE4F1;
     border-radius: 26px;
-    border: 3px dashed #FFFFFF;
-    box-shadow: 0px 6px 16px rgba(75,0,130,0.08);
-    margin: 18px 0px;
+    padding: 20px 18px;
+    box-shadow: 0px 8px 18px rgba(0,0,0,0.08);
+    border: 1px solid rgba(75, 0, 130, 0.08);
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+}
+            
+/* Die Icons fo de Stationen, die ein visuelles Element hinzufügen und die Stationen leichter erkennbar  */
+.station-icon {
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+            
+/* Die Titel der Stationen, die den Namen der Station enthalten. */
+.station-title {
+    font-weight: 900;
+    font-size: 20px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    color: #4B0082 !important;
 }
 
-/* --- Analyzer Cards --- */
+/* Die Untertitel der Stationen, die eine kurze Beschreibung der Station enthalten. */                       
+.station-sub {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #6A3FA0 !important;
+    margin-bottom: 14px;
+}
+            
+ /* Die Badges, die den Status der Station anzeigen (z.B. "Freigeschaltet", "Neu", "Abgeschlossen"). Sie sollten auffällig und einladend gestaltet sein, damit die Spieler sofort erkennen, ob die Station verfügbar ist oder nicht. Ein helles Blau mit einem dunklen Lila Text sorgt für einen guten Kontrast und macht die Badges gut lesbar.           
+.station-badge {
+    display: inline-block;
+    background: #E6F7FF;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #4B0082 !important;
+    width: fit-content;
+    margin-top: auto;
+}
+/* Der Abstand zwischen den Stationen, damit die Karten nicht zu dicht beieinander stehen und die Spieler genug Platz haben, um die Informationen auf jeder Karte zu erfassen. Ein Abstand von 14px sorgt für eine angenehme visuelle Trennung zwischen den Stationen, ohne dass sie zu weit auseinander stehen.            
+.station-wrap {
+    margin-bottom: 14px;
+}
+
+/* Das Mikroskop */ 
+.screen-box {
+    background-color: #FFF0F7;
+    border-radius: 28px;
+    padding: 20px;
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
+    margin-bottom: 18px;
+}
+.plate-card {
+    background: #FFE4F1;
+    border-radius: 999px;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 12px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 8px rgba(255,255,255,0.4),
+                0px 8px 18px rgba(0,0,0,0.08);
+    font-size: 56px;
+}
+.plate-label {
+    text-align: center;
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #4B0082 !important;
+}
+.microscope-box {
+    background: #E6F7FF;
+    border-radius: 28px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0px 8px 18px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+}
+.gram-step-card {
+    background: #F3E8FF;
+    border-radius: 20px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
+    margin-bottom: 10px;
+    min-height: 120px;
+}
+.gram-step-title {
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #4B0082 !important;
+}
+.big-emoji {
+    font-size: 44px;
+    margin-bottom: 10px;
+    display: block;
+}
+.path-card {
+    background: #FFF7D6;
+    border-radius: 18px;
+    padding: 12px 14px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
+    margin-top: 10px;
+    margin-bottom: 14px;
+    color: #4B0082 !important;
+}
+            
+/* Laborjournal */ /* Design für die Einträge im Laborjournal*/
+.journal-card {
+    background: #FFF8DC;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.08);
+    border: 2px dashed #E6CFA7;
+    margin-bottom: 14px;
+}
+.journal-title {
+    font-weight: 900;
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: #4B0082 !important;
+}
+.journal-section {
+    font-weight: 800;
+    margin-top: 10px;
+    margin-bottom: 6px;
+    color: #4B0082 !important;
+}
+.journal-entry {
+    margin-left: 10px;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #5A2D82 !important;
+}            
+</style>
+""", unsafe_allow_html=True)
+
+# Zusätzliche Styles für die speziellen Karten und Elemente, die in den verschiedenen Screens der App verwendet werden. Diese Styles sorgen dafür, dass die Informationen auf den Karten klar strukturiert und ansprechend präsentiert werden, damit die Spieler sie leicht verstehen und interpretieren können. Jede Karte hat ein eigenes Farbschema und Layout, das sich von den anderen unterscheidet, um die verschiedenen Arten von Informationen visuell zu unterscheiden.
+st.markdown("""
+<style>
 .analyzer-card {
     background: #eef5fb;
     border-radius: 24px;
@@ -76,158 +281,53 @@ h1, h2, h3, p, span, div, label {
 }
 
 .analyzer-title {
-    font-size: 22px;
-    font-weight: 900;
-    color: #4B0082 !important;
-    margin-bottom: 12px;
+    font-size: 24px;
+    font-weight: 800;
+    color: #4b0082;
+    margin-bottom: 8px;
 }
 
 .analyzer-sub {
-    font-size: 15px;
-    color: #5A2D82 !important;
-    margin-bottom: 18px;
+    font-size: 16px;
+    color: #5e2a84;
+    line-height: 1.5;
+    margin-bottom: 14px;
 }
 
 .analyzer-status {
-    font-weight: 800;
-    color: #4B0082 !important;
-}
-
-/* --- Laborjournal: gelbes Notizpapier --- */
-.journal-card {
-    background-color: #FFF8B8;
-    background-image: repeating-linear-gradient(
-        to bottom,
-        #FFF8B8 0px,
-        #FFF8B8 30px,
-        #E7DFA0 31px
-    );
-    border-radius: 22px;
-    padding: 28px 34px;
-    box-shadow: 0px 8px 20px rgba(90, 50, 0, 0.18);
-    border: 3px solid #E8D46A;
-    margin-bottom: 18px;
-    font-family: "Comic Sans MS", "Trebuchet MS", cursive;
-    line-height: 31px;
-}
-
-.journal-title {
-    font-weight: 900;
-    font-size: 26px;
-    margin-bottom: 18px;
-    color: #4B0082 !important;
-    font-family: "Comic Sans MS", "Trebuchet MS", cursive;
-}
-
-.journal-section {
-    font-weight: 900;
-    margin-top: 12px;
-    margin-bottom: 4px;
-    font-size: 18px;
-    color: #4B0082 !important;
-}
-
-.journal-entry {
-    margin-left: 12px;
-    margin-bottom: 0px;
-    font-size: 16px;
-    color: #5A2D82 !important;
-    line-height: 31px;
-}
-
-/* --- Gram-Spiel Karten --- */
-.chem-card {
-    background: #FFE4F1;
-    border: 2px solid #F7C4DD;
-    border-radius: 24px;
-    padding: 22px 12px;
-    text-align: center;
-    box-shadow: 0px 6px 14px rgba(75,0,130,0.12);
-    margin-bottom: 12px;
-    min-height: 130px;
-}
-
-.chem-icon {
-    font-size: 34px;
-    margin-bottom: 8px;
-}
-
-.chem-name {
-    font-size: 20px;
-    font-weight: 800;
-    color: #4B0082 !important;
-}
-
-/* --- Agarplatten Karten --- */
-.plate-choice-card {
-    background: #FFE4F1;
-    border: 2px solid #F7C4DD;
-    border-radius: 26px;
-    padding: 24px 14px;
-    text-align: center;
-    box-shadow: 0px 6px 14px rgba(75,0,130,0.12);
-    margin-bottom: 12px;
-    min-height: 130px;
-}
-
-.plate-choice-icon {
-    font-size: 36px;
-    margin-bottom: 8px;
-}
-
-.plate-choice-title {
-    font-size: 22px;
-    font-weight: 900;
-    color: #4B0082 !important;
-}
-
-/* --- Streamlit Buttons hübscher --- */
-.stButton > button {
-    background-color: #FFE4F1;
-    color: #4B0082 !important;
-    border: none;
-    border-radius: 24px;
-    padding: 12px 24px;
+    display: inline-block;
+    background: #f8e7f0;
+    color: #4b0082;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14px;
     font-weight: 700;
-    box-shadow: 0px 4px 10px rgba(75,0,130,0.10);
+    margin-top: 8px;
 }
 
-.stButton > button:hover {
-    background-color: #FFD1E8;
-    color: #4B0082 !important;
-    border: none;
+.machine-box {
+    background: #fff8fc;
+    border: 2px dashed #e5bfd1;
+    border-radius: 22px;
+    padding: 18px;
+    margin: 12px 0 18px 0;
+    color: #5e2a84;
+    font-size: 17px;
+    line-height: 1.6;
 }
 
-/* --- Selectbox / Inputs etwas passender --- */
-div[data-baseweb="select"] > div {
-    background-color: #FFF4FA;
-    border-radius: 14px;
-}
-            
-            /* --- Stationskarten im Labor --- */
-.station-card {
-    background: #FFE4F1;
-    border-radius: 28px;
-    padding: 24px;
-    box-shadow: 0px 8px 18px rgba(75,0,130,0.10);
-    border: 2px solid #F7C4DD;
-    margin-bottom: 18px;
-    min-height: 260px;
+.analysis-step {
+    background: #f3d6e5;
+    border-radius: 18px;
+    padding: 14px 18px;
+    margin: 10px 0;
+    color: #4b0082;
+    font-weight: 600;
 }
 
-.station-title {
-    font-size: 28px;
-    font-weight: 900;
-    color: #4B0082 !important;
-    margin-bottom: 16px;
+.soft-divider {
+    height: 14px;
 }
-
-.station-sub {
-    font-size: 18px;
-    color: #5A2D82 !important;
-    line-height: 1.7;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -417,37 +517,37 @@ microscope_info = {
         "view": "Grampositive Kokken in Haufen. Das spricht eher für Staphylokokken.",
         "gram_type": "Gram-positiv",
         "image": "images/fall1_mikro.png",
-        "sample": "Probe: Eiter aus einer Hautabszess-Läsion"
+        "sample": "Probe: Eiter aus einer Hautabszess-Läsion."
     },
     "Fall 2": {
         "view": "Grampositive Kokken in Ketten. Das spricht eher für Streptokokken.",
         "gram_type": "Gram-positiv",
         "image": "images/fall2_mikro.png",
-        "sample": "Probe: Rachenabstrich"
+        "sample": "Probe: Rachenabstrich."
     },
     "Fall 3": {
         "view": "Gramnegative Stäbchen sind sichtbar.",
         "gram_type": "Gram-negativ",
         "image": "images/fall3_mikro.png",
-        "sample": "Probe: Mittelstrahlurin"
+        "sample": "Probe: Mittelstrahlurin."
     },
     "Fall 4": {
         "view": "Auffälliges, strukturiertes Ei, passend zu einem Helminthen.",
         "gram_type": "Nicht sinnvoll",
         "image": "images/fall4_mikro.png",
-        "sample": "Probe: Stuhl"
+        "sample": "Probe: Stuhlprobe."
     },
     "Fall 5": {
         "view": "Grampositive Kokken erkennbar.",
         "gram_type": "Gram-positiv, aber unspezifisch",
         "image": "images/fall5_mikro.png",
-        "sample": "Probe: Liquor"
+        "sample": "Probe: Liquor."
     },
     "Fall 6": {
         "view": "Sprosszellen und Hyphen, vereinbar mit einem Hefepilz.",
         "gram_type": "Nicht typisch / Pilzverdacht",
         "image": "images/fall6_mikro.png",
-        "sample": "Probe: Vaginalabstrich"
+        "sample": "Probe: Vaginalabstrich."
     }
 }
 
@@ -558,23 +658,18 @@ solutions = {
 }
 # Hier sind die Diagnoseoptionen, die in der Auswahlbox angezeigt werden. Sie sollten alle möglichen Diagnosen enthalten, damit die Spieler eine Auswahl treffen können. Einige Fälle sind als Verwirrung hier
 DIAG_CHOICES = [
-    #Bakterien
     "Staphylococcus aureus",
     "Staphylococcus epidermidis",
     "Streptococcus pyogenes",
     "Escherichia coli",
     "Klebsiella pneumoniae",
     "Pseudomonas aeruginosa",
-    #Pilze
     "Candida spp.",
-    #Viren
     "Virale Infektion (z.B. Influenza)",
-    "EBV (Mononukleose)",
-    #Parasiten
-    "Helmintheninfektion",
-    "Giardien (Protozoen)",
-    #Krankheiten
+    "EBV / Mononukleose",
     "Allergische Reaktion / Hypersensitivität",
+    "Helmintheninfektion",
+    "Giardiasis (Protozoen)",
     "Akutes Koronarsyndrom",
     "Pneumonie (bakteriell)",
     "Pneumonie (viral)",
@@ -660,19 +755,13 @@ if st.session_state.screen == "home":
 # LEVEL SCREEN, Hier sollte die Aufführung alles Fälle sein, damit die Spieler einen Fall auswählen können. Es sollte auch der aktuelle Score angezeigt werden.
 # -------------------------
 elif st.session_state.screen == "level":
+    st.title("Fall auswählen")
+
     st.markdown(f"""
     <div class="hint-card">
     🎯 <b>Score:</b> {st.session_state.score}
     </div>
     """, unsafe_allow_html=True)
-
-    st.title("Fall auswählen")
-
-    if st.button("🔙 Zurück zum Home", key="back_level"):
-        st.session_state.screen = "home"
-        st.rerun()
-
-    st.write("---")
 
     case_preview = {
     "Fall 1": "Schwerer Infekt mit Fieber",
@@ -697,7 +786,9 @@ elif st.session_state.screen == "level":
                 st.session_state.selected_plate = None
                 reset_gram_game()
                 st.rerun()
-
+    if st.button("🔙 Zurück zum Home", key="back_level"):
+        st.session_state.screen = "home"
+        st.rerun()
 # -------------------------
 # LAB SCREEN zur Fallbearbeitung, hier sollten die Patientendaten, die Auswahl der Laborstationen und die Diagnoseoptionen angezeigt werden. Je nachdem, welche Laborstationen freigeschaltet wurden, sollten die entsprechenden Ergebnisse/Hinweise angezeigt werden. Es sollte auch die Möglichkeit geben, zur Level-Auswahl zurückzukehren.
 # -------------------------
@@ -762,7 +853,7 @@ elif st.session_state.screen == "lab":
         </div>
         """, unsafe_allow_html=True)
 
-        st.subheader("🧠 Diagnose")
+        st.subheader("🧠 Diagnose (bitte wählen)")
         diag_options = ["— bitte wählen —"] + DIAG_CHOICES
 
         feedback_key = f"feedback_{case}"
@@ -1109,15 +1200,22 @@ elif st.session_state.screen == "agar":
 
         st.write("---")
 
+# --- NEUER CODE FÜR AGAR-JOURNAL ---
         if st.button("📓 Befunde ins Laborjournal übernehmen", key=f"journal_agar_{case}"):
-            st.session_state.lab_journal["Kultur & Tests"] = [
-                f"{plate}: {text}",
-                f"Gram: {mt['Gram']}",
-                f"Katalase: {mt['Katalase']}",
-                f"Koagulase: {mt['Koagulase']}",
-                f"Hämolyse: {mt['Hämolyse']}"
+            # Wir sammeln die Infos der aktuellen Platte
+            neue_infos = [
+                f"Platte {plate}: {text}",
+                f"Gram-Check: {mt['Gram']}",
+                f"Schnelltests: Kat({mt['Katalase']}), Koag({mt['Koagulase']}), Hämolyse({mt['Hämolyse']})"
             ]
-
+            
+            # Wir hängen sie an die Liste an, falls sie noch nicht drin sind
+            for info in neue_infos:
+                if info not in st.session_state.lab_journal["Kultur & Tests"]:
+                    st.session_state.lab_journal["Kultur & Tests"].append(info)
+            
+            st.success(f"✅ Befunde von {plate} wurden ins Journal eingetragen!")
+        # --- ENDE NEUER CODE ---
     else:
         st.markdown("""
         <div class="hint-card">
@@ -1141,14 +1239,16 @@ elif st.session_state.screen == "mikroskop":
         st.session_state.screen = "lab"
         st.rerun()
 
+    st.markdown(f"""
+    <div class="microscope-box">
+        <span class="big-emoji">🔬</span>
+        <h3>Mikroskopischer Eindruck</h3>
+        <p>{microscope_info[case]["view"]}</p>
+    </div>
+    """, unsafe_allow_html=True)
+
     st.subheader("🎮 Gram-Färbung Mini-Spiel")
     st.write("Wähle die Schritte in der richtigen Reihenfolge:")
-
-    st.markdown(f"""
-        <div class="hint-card">
-        <b>🧪 {microscope_info[case]["sample"]}</b>
-        </div>
-        """, unsafe_allow_html=True)
 
     c1, c2, c3, c4 = st.columns(4)
 
@@ -1235,13 +1335,10 @@ elif st.session_state.screen == "mikroskop":
         )
 
         st.markdown(f"""
-        <div class="microscope-box">
-            <span class="big-emoji"/span>
-            <h3>Mikroskopischer Eindruck</h3>
-            <p>{microscope_info[case]["view"]}</p>
+        <div class="hint-card">
+        <b>🧪 {microscope_info[case]["sample"]}</b>
         </div>
         """, unsafe_allow_html=True)
-
     else:
         st.markdown("""
         <div class="hint-card">
@@ -1299,21 +1396,20 @@ elif st.session_state.screen == "blutbild":
         Die EDTA-Blutprobe ist eingetroffen und wartet auf die Bearbeitung im Labor.
         </div>
      """, unsafe_allow_html=True)
-        
-    # Schritt 2: Analysegeräte auswählen und starten
+
     if st.button("🧪 Probe ins Analysegerät laden", key=f"load_blood_{case}"):
         st.session_state.blood_loaded = True
         st.rerun()
 
-    if st.session_state.blood_loaded:
+    else:
         st.markdown("""
-        <div class="result-card">
-            ✅ <b>Probe geladen:</b><br>
-        Wähle jetzt, welche Analysegeräte verwendet werden sollen.
-    </div>
-    """, unsafe_allow_html=True)
+     <div class="machine-box">
+        ✅ <b>Probe geladen:</b><br>
+     Wähle jetzt, welche Analysegeräte verwendet werden sollen.
+     </div>
+     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
     with col1:
         st.markdown(f"""
@@ -1421,15 +1517,28 @@ elif st.session_state.screen == "blutbild":
             </div>
             """, unsafe_allow_html=True)
 
+       # --- NEUER CODE FÜR BLUT-JOURNAL ---
         if st.button("📓 Ins Laborjournal übernehmen", key=f"journal_blood_{case}"):
-            eintraege = []
+            neue_eintraege = []
 
+            # 1. Chemie-Werte (CRP, PCT etc.) kompakt sammeln
             if st.session_state.chem_done:
-                for param, val in values.items():
-                    eintraege.append(f"{param}: {val}")
+                werte_liste = [f"{p}: {v}" for p, v in values.items()]
+                neue_eintraege.append("🧪 Chemie: " + " | ".join(werte_liste))
 
+            # 2. Hämatologie (Diff-BB) kompakt sammeln
             if st.session_state.hema_done:
-                for param, val in diff.items():
-                    eintraege.append(f"{param}: {val}")
+                diff_liste = [f"{p}: {v}" for p, v in diff.items()]
+                neue_eintraege.append("🩸 Hämatologie: " + " | ".join(diff_liste))
+                
+                # 3. Die automatische Interpretation mitspeichern
+                for hinweis in interpret_blood(diff):
+                    neue_eintraege.append(hinweis)
 
-            st.session_state.lab_journal["Blutanalyse"] = eintraege
+            # Alles ins Journal schieben (ohne Dubletten)
+            for eintrag in neue_eintraege:
+                if eintrag not in st.session_state.lab_journal["Blutanalyse"]:
+                    st.session_state.lab_journal["Blutanalyse"].append(eintrag)
+            
+            st.success("✅ Komplette Blutanalyse wurde ins Journal übernommen!")
+        # --- ENDE NEUER CODE ---
