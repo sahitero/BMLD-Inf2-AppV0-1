@@ -1,3 +1,4 @@
+from click import style
 import streamlit as st
 import pandas as pd
 
@@ -6,270 +7,64 @@ import pandas as pd
 # =========================================================
 
 # =========================================================
-# 1) DESIGN (CSS)  Hier sind die Designs der App aufgeführt
+# 1) CSS STYLES  Hier werden alle CSS-Styles definiert, die für die Gestaltung der App verwendet werden. Diese Styles sorgen dafür, dass die App ansprechend aussieht und eine gute Benutzererfahrung bietet. Es ist wichtig, dass die Styles konsistent und gut durchdacht sind, damit die App professionell wirkt und die Spieler gerne darin spielen.
 # =========================================================
+# Zusätzliche Styles für die speziellen Karten und Elemente
 st.markdown("""
 <style>
-/* --- App Hintergrund ---  Die Hintergrundfarbe der gesamten App wird hier definiert. Es ist ein sanftes Rosa, das gut zu einem biomedizinischen Labor passt und eine freundliche Atmosphäre schafft.*/
+
+/* --- App Hintergrund --- */
 .stApp {
     background-color: #FFB3D1;
 }
 
-/* --- Globale Textfarben --- Farbe des Textes in der gesamten App, damit es gut lesbar ist und zum Hintergrund passt. Ein dunkles Lila wird verwendet, um einen guten Kontrast zum rosa Hintergrund zu bieten.*/
-h1, p, span, div {
+/* --- Globale Textfarben --- */
+h1, h2, h3, p, span, div, label {
     color: #4B0082 !important;
 }
 
-/* --- Standard Cards --- Design für die Patientenakte/Informationen*/
+/* --- Hauptcontainer etwas schöner --- */
+.block-container {
+    padding-top: 2rem;
+}
+
+/* --- Standard Cards --- */
 .cute-card {
     background-color: #FFE4F1;
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
     margin-bottom: 12px;
+    border: 2px solid #F7C4DD;
 }
-            
-/* Design für die Ergebnisse der Tests, z.Bsp. Mikroskopischer Eindruck, Agarplatten-Ergebnisse, Blutwerte */           
+
 .result-card {
-    background-color: #E6F7FF;
-    padding: 15px;
-    border-radius: 20px;
-    margin-bottom: 10px;
-    box-shadow: 0px 3px 10px rgba(0,0,0,0.06);
+    background-color: #F7EDFF;
+    padding: 18px 22px;
+    border-radius: 22px;
+    box-shadow: 0px 4px 14px rgba(75,0,130,0.10);
+    border: 2px solid #E0C7FF;
+    margin: 14px 0px;
 }
-            
-/* Design für die Hinweise, die den Spielern gegeben werden, z.Bsp. Interpretation der Blutwerte oder der Mikrotests */
+
 .hint-card {
-    background-color: #F3E8FF;
-    padding: 12px 14px;
-    border-radius: 18px;
-    margin-bottom: 10px;
-    box-shadow: 0px 3px 10px rgba(0,0,0,0.06);
-}
-
-/* --- Standard Buttons --- */ /* Design für die Buttons, z.Bsp. "Start", "Fall auswählen", "Tests durchführen". Es ist wichtig, dass die Buttons auffällig und einladend gestaltet sind, damit die Spieler gerne darauf klicken. Ein helles Rosa mit einem dunklen Lila Text sorgt für einen guten Kontrast und eine freundliche Atmosphäre. */
-div.stButton > button {
-    background-color: #FFD6E8;
-    color: #4B0082 !important;
+    background-color: #FFF4FA;
+    padding: 18px 22px;
     border-radius: 22px;
-    border: none;
-    padding: 0.6em 1.1em;
-    font-weight: 700;
-}
-/* Hover-Effekt für die Buttons, damit sie interaktiver wirken. Wenn die Spieler mit der Maus über die Buttons fahren, ändert sich die Hintergrundfarbe zu einem dunkleren Lila und der Text wird weiß, um einen klaren visuellen Effekt zu erzielen. */
-div.stButton > button:hover {
-    background-color: #4B0082;
-    color: white !important;
+    border: 2px dashed #F7C4DD;
+    margin: 14px 0px;
 }
 
-/* --- Sticky App Header --- */ /* Design für den App-Header, der auf allen Screens sichtbar ist. Er enthält den aktuellen Fallnamen, den Score und einen Button, um zurück zur Fallauswahl zu gelangen. Der Header ist sticky, damit er immer sichtbar bleibt, auch wenn die Spieler nach unten scrollen. Ein halbtransparenter Hintergrund mit einem leichten Blur-Effekt sorgt dafür, dass der Header sich vom restlichen Inhalt abhebt, ohne zu dominant zu wirken. */
-.app-header {
-    position: sticky;
-    top: 0;
-    z-index: 999;
-    background: rgba(255, 179, 209, 0.95);
-    backdrop-filter: blur(8px);
-    padding: 10px 6px 12px 6px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    margin-bottom: 10px;
-}
-.header-row {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-.header-left {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.header-pill {
-    background-color: #F3E8FF;
-    border-radius: 999px;
-    padding: 6px 12px;
-    display: inline-block;
-    box-shadow: 0px 6px 16px rgba(0,0,0,0.08);
-    font-weight: 800;
-    color: #4B0082 !important;
-}
-.header-score {
-    background-color: #E6F7FF;
-    border-radius: 999px;
-    padding: 6px 12px;
-    display: inline-block;
-    box-shadow: 0px 6px 16px rgba(0,0,0,0.08);
-    font-weight: 800;
-    color: #4B0082 !important;
-}
-.app-header div.stButton > button {
-    background-color: #FFE4F1 !important;
-    color: #4B0082 !important;
-    border-radius: 999px !important;
-    padding: 0.45em 1.0em !important;
-    font-weight: 800 !important;
-    border: none !important;
-    box-shadow: 0px 6px 16px rgba(0,0,0,0.08) !important;
-}
-.app-header div.stButton > button:hover {
-    background-color: #4B0082 !important;
-    color: white !important;
-}
-
-/* --- Laborstationen im Lab-Screen --- */ /* Design für die Karten, die die verschiedenen Laborstationen repräsentieren (Mikroskop, Agarplatten, Blutanalyse). Jede Karte hat ein eigenes Farbschema, das sie von den anderen unterscheidet, aber alle Karten haben einen ähnlichen Stil mit abgerundeten Ecken, Schatten und einem klaren Layout, um die Informationen übersichtlich darzustellen. Die Karten enthalten auch einen Titel, eine kurze Beschreibung und einen Button, um die Station zu betreten. */
-.station-card {
-    background: #FFE4F1;
+.machine-box {
+    background-color: #FFF7FC;
+    padding: 24px 28px;
     border-radius: 26px;
-    padding: 20px 18px;
-    box-shadow: 0px 8px 18px rgba(0,0,0,0.08);
-    border: 1px solid rgba(75, 0, 130, 0.08);
-    min-height: 260px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    text-align: left;
-}
-            
-/* Die Icons der Stationen, die ein visuelles Element hinzufügen und die Stationen leichter erkennbar machen. Sie sollten einfach und klar gestaltet sein, damit sie auch in kleiner Größe gut erkennbar sind. Ein dunkles Lila sorgt für einen guten Kontrast zum rosa Hintergrund der Karte und macht die Icons auffällig. */
-.station-icon {
-    font-size: 34px;
-    margin-bottom: 8px;
-}
-            
-/* Die Titel der Stationen, die den Namen der Station enthalten. Sie sollten auffällig und einladend gestaltet sein, damit die Spieler sofort erkennen, um welche Station es sich handelt und gerne darauf klicken. Ein dunkles Lila mit einem leichten Schatten sorgt für einen guten Kontrast zum rosa Hintergrund der Karte und macht die Titel gut lesbar. */
-.station-title {
-    font-weight: 900;
-    font-size: 20px;
-    line-height: 1.2;
-    margin-bottom: 10px;
-    color: #4B0082 !important;
+    border: 3px dashed #FFFFFF;
+    box-shadow: 0px 6px 16px rgba(75,0,130,0.08);
+    margin: 18px 0px;
 }
 
-/* Die Untertitel der Stationen, die eine kurze Beschreibung der Station enthalten. Sie sollten informativ und einladend formuliert sein, damit die Spieler neugierig auf die Station werden und gerne darauf klicken.                        
-.station-sub {
-    font-size: 15px;
-    line-height: 1.65;
-    color: #6A3FA0 !important;
-    margin-bottom: 14px;
-}
-            
- /* Die Badges, die den Status der Station anzeigen (z.B. "Freigeschaltet", "Neu", "Abgeschlossen"). Sie sollten auffällig und einladend gestaltet sein, damit die Spieler sofort erkennen, ob die Station verfügbar ist oder nicht. Ein helles Blau mit einem dunklen Lila Text sorgt für einen guten Kontrast und macht die Badges gut lesbar.           
-.station-badge {
-    display: inline-block;
-    background: #E6F7FF;
-    padding: 7px 12px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 800;
-    color: #4B0082 !important;
-    width: fit-content;
-    margin-top: auto;
-}
-/* Der Abstand zwischen den Stationen, damit die Karten nicht zu dicht beieinander stehen und die Spieler genug Platz haben, um die Informationen auf jeder Karte zu erfassen. Ein Abstand von 14px sorgt für eine angenehme visuelle Trennung zwischen den Stationen, ohne dass sie zu weit auseinander stehen.            
-.station-wrap {
-    margin-bottom: 14px;
-}
-
-/* --- Cute Agar + Mikroskop Screens --- */ /* Design für die Bildschirme, die angezeigt werden, wenn die Spieler eine Station betreten (z.B. Mikroskop, Agarplatten). Diese Bildschirme haben ein eigenes Farbschema und Layout, das sich von der Startseite unterscheidet, um den Spielern das Gefühl zu geben, wirklich in eine andere Umgebung einzutauchen. Die Bildschirme enthalten auch spezielle Karten für die Ergebnisse der Tests, die den Spielern helfen, die Informationen zu verstehen und zu interpretieren.
-.screen-box {
-    background-color: #FFF0F7;
-    border-radius: 28px;
-    padding: 20px;
-    box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
-    margin-bottom: 18px;
-}
-.plate-card {
-    background: #FFE4F1;
-    border-radius: 999px;
-    width: 180px;
-    height: 180px;
-    margin: 0 auto 12px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 0 0 8px rgba(255,255,255,0.4),
-                0px 8px 18px rgba(0,0,0,0.08);
-    font-size: 56px;
-}
-.plate-label {
-    text-align: center;
-    font-weight: 800;
-    font-size: 18px;
-    margin-bottom: 8px;
-    color: #4B0082 !important;
-}
-.microscope-box {
-    background: #E6F7FF;
-    border-radius: 28px;
-    padding: 24px;
-    text-align: center;
-    box-shadow: 0px 8px 18px rgba(0,0,0,0.08);
-    margin-bottom: 16px;
-}
-.gram-step-card {
-    background: #F3E8FF;
-    border-radius: 20px;
-    padding: 16px;
-    text-align: center;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
-    margin-bottom: 10px;
-    min-height: 120px;
-}
-.gram-step-title {
-    font-weight: 800;
-    margin-bottom: 8px;
-    color: #4B0082 !important;
-}
-.big-emoji {
-    font-size: 44px;
-    margin-bottom: 10px;
-    display: block;
-}
-.path-card {
-    background: #FFF7D6;
-    border-radius: 18px;
-    padding: 12px 14px;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
-    margin-top: 10px;
-    margin-bottom: 14px;
-    color: #4B0082 !important;
-}
-            
-/* --- Laborjournal --- */ /* Design für die Einträge im Laborjournal, in dem die Spieler ihre Beobachtungen und Ergebnisse festhalten können. Das Journal hat ein eigenes Farbschema und Layout, das sich von den anderen Bildschirmen unterscheidet, um den Spielern das Gefühl zu geben, wirklich in eine andere Umgebung einzutauchen. Die Einträge im Journal sind klar strukturiert, damit die Spieler ihre Informationen leicht organisieren und wiederfinden können.
-.journal-card {
-    background: #FFF8DC;
-    border-radius: 22px;
-    padding: 18px;
-    box-shadow: 0px 6px 15px rgba(0,0,0,0.08);
-    border: 2px dashed #E6CFA7;
-    margin-bottom: 14px;
-}
-.journal-title {
-    font-weight: 900;
-    font-size: 20px;
-    margin-bottom: 12px;
-    color: #4B0082 !important;
-}
-.journal-section {
-    font-weight: 800;
-    margin-top: 10px;
-    margin-bottom: 6px;
-    color: #4B0082 !important;
-}
-.journal-entry {
-    margin-left: 10px;
-    margin-bottom: 4px;
-    font-size: 14px;
-    color: #5A2D82 !important;
-}            
-</style>
-""", unsafe_allow_html=True)
-
-# Zusätzliche Styles für die speziellen Karten und Elemente, die in den verschiedenen Screens der App verwendet werden. Diese Styles sorgen dafür, dass die Informationen auf den Karten klar strukturiert und ansprechend präsentiert werden, damit die Spieler sie leicht verstehen und interpretieren können. Jede Karte hat ein eigenes Farbschema und Layout, das sich von den anderen unterscheidet, um die verschiedenen Arten von Informationen visuell zu unterscheiden.
-st.markdown("""
-<style>
+/* --- Analyzer Cards --- */
 .analyzer-card {
     background: #eef5fb;
     border-radius: 24px;
@@ -281,53 +76,158 @@ st.markdown("""
 }
 
 .analyzer-title {
-    font-size: 24px;
-    font-weight: 800;
-    color: #4b0082;
-    margin-bottom: 8px;
+    font-size: 22px;
+    font-weight: 900;
+    color: #4B0082 !important;
+    margin-bottom: 12px;
 }
 
 .analyzer-sub {
-    font-size: 16px;
-    color: #5e2a84;
-    line-height: 1.5;
-    margin-bottom: 14px;
+    font-size: 15px;
+    color: #5A2D82 !important;
+    margin-bottom: 18px;
 }
 
 .analyzer-status {
-    display: inline-block;
-    background: #f8e7f0;
-    color: #4b0082;
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 700;
-    margin-top: 8px;
+    font-weight: 800;
+    color: #4B0082 !important;
 }
 
-.machine-box {
-    background: #fff8fc;
-    border: 2px dashed #e5bfd1;
+/* --- Laborjournal: gelbes Notizpapier --- */
+.journal-card {
+    background-color: #FFF8B8;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        #FFF8B8 0px,
+        #FFF8B8 30px,
+        #E7DFA0 31px
+    );
     border-radius: 22px;
-    padding: 18px;
-    margin: 12px 0 18px 0;
-    color: #5e2a84;
-    font-size: 17px;
-    line-height: 1.6;
+    padding: 28px 34px;
+    box-shadow: 0px 8px 20px rgba(90, 50, 0, 0.18);
+    border: 3px solid #E8D46A;
+    margin-bottom: 18px;
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive;
+    line-height: 31px;
 }
 
-.analysis-step {
-    background: #f3d6e5;
-    border-radius: 18px;
-    padding: 14px 18px;
-    margin: 10px 0;
-    color: #4b0082;
-    font-weight: 600;
+.journal-title {
+    font-weight: 900;
+    font-size: 26px;
+    margin-bottom: 18px;
+    color: #4B0082 !important;
+    font-family: "Comic Sans MS", "Trebuchet MS", cursive;
 }
 
-.soft-divider {
-    height: 14px;
+.journal-section {
+    font-weight: 900;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 18px;
+    color: #4B0082 !important;
 }
+
+.journal-entry {
+    margin-left: 12px;
+    margin-bottom: 0px;
+    font-size: 16px;
+    color: #5A2D82 !important;
+    line-height: 31px;
+}
+
+/* --- Gram-Spiel Karten --- */
+.chem-card {
+    background: #FFE4F1;
+    border: 2px solid #F7C4DD;
+    border-radius: 24px;
+    padding: 22px 12px;
+    text-align: center;
+    box-shadow: 0px 6px 14px rgba(75,0,130,0.12);
+    margin-bottom: 12px;
+    min-height: 130px;
+}
+
+.chem-icon {
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.chem-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: #4B0082 !important;
+}
+
+/* --- Agarplatten Karten --- */
+.plate-choice-card {
+    background: #FFE4F1;
+    border: 2px solid #F7C4DD;
+    border-radius: 26px;
+    padding: 24px 14px;
+    text-align: center;
+    box-shadow: 0px 6px 14px rgba(75,0,130,0.12);
+    margin-bottom: 12px;
+    min-height: 130px;
+}
+
+.plate-choice-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+.plate-choice-title {
+    font-size: 22px;
+    font-weight: 900;
+    color: #4B0082 !important;
+}
+
+/* --- Streamlit Buttons hübscher --- */
+.stButton > button {
+    background-color: #FFE4F1;
+    color: #4B0082 !important;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 24px;
+    font-weight: 700;
+    box-shadow: 0px 4px 10px rgba(75,0,130,0.10);
+}
+
+.stButton > button:hover {
+    background-color: #FFD1E8;
+    color: #4B0082 !important;
+    border: none;
+}
+
+/* --- Selectbox / Inputs etwas passender --- */
+div[data-baseweb="select"] > div {
+    background-color: #FFF4FA;
+    border-radius: 14px;
+}
+            
+            /* --- Stationskarten im Labor --- */
+.station-card {
+    background: #FFE4F1;
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0px 8px 18px rgba(75,0,130,0.10);
+    border: 2px solid #F7C4DD;
+    margin-bottom: 18px;
+    min-height: 260px;
+}
+
+.station-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: #4B0082 !important;
+    margin-bottom: 16px;
+}
+
+.station-sub {
+    font-size: 18px;
+    color: #5A2D82 !important;
+    line-height: 1.7;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -1399,20 +1299,21 @@ elif st.session_state.screen == "blutbild":
         Die EDTA-Blutprobe ist eingetroffen und wartet auf die Bearbeitung im Labor.
         </div>
      """, unsafe_allow_html=True)
-
+        
+    # Schritt 2: Analysegeräte auswählen und starten
     if st.button("🧪 Probe ins Analysegerät laden", key=f"load_blood_{case}"):
         st.session_state.blood_loaded = True
         st.rerun()
 
-    else:
+    if st.session_state.blood_loaded:
         st.markdown("""
-     <div class="machine-box">
-        ✅ <b>Probe geladen:</b><br>
-     Wähle jetzt, welche Analysegeräte verwendet werden sollen.
-     </div>
-     """, unsafe_allow_html=True)
+        <div class="result-card">
+            ✅ <b>Probe geladen:</b><br>
+        Wähle jetzt, welche Analysegeräte verwendet werden sollen.
+    </div>
+    """, unsafe_allow_html=True)
 
-        col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
     with col1:
         st.markdown(f"""
