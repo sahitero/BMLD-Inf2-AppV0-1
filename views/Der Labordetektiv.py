@@ -342,7 +342,87 @@ st.markdown("""
 .soft-divider {
     height: 14px;
 }
+
+/* --- Floating Lab Elements --- */
+
+.floating-item {
+    position: fixed;
+    font-size: 52px;
+    opacity: 0.22;
+    z-index: 0;
+    pointer-events: none;
+
+    animation: floaty 8s ease-in-out infinite;
+}
+
+/* Einzelne Positionen */
+
+.item1 {
+    top: 8%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.item2 {
+    top: 22%;
+    right: 10%;
+    animation-delay: 2s;
+}
+
+.item3 {
+    bottom: 14%;
+    left: 18%;
+    animation-delay: 1s;
+}
+
+.item4 {
+    bottom: 28%;
+    right: 8%;
+    animation-delay: 3s;
+}
+
+.item5 {
+    top: 55%;
+    left: 42%;
+    animation-delay: 4s;
+}
+
+.item6 {
+    top: 72%;
+    right: 30%;
+    animation-delay: 5s;
+}
+
+/* Bewegung */
+
+@keyframes floaty {
+
+    0% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(8deg) scale(1.08);
+    }
+
+    100% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+    }
+}
+
+
+            
 </style>
+""", unsafe_allow_html=True)
+
+# Floatin Bacteria anzeigen
+st.markdown("""
+<div class="floating-item item1">🦠</div>
+<div class="floating-item item2">🧬</div>
+<div class="floating-item item3">🧫</div>
+<div class="floating-item item4">🔬</div>
+<div class="floating-item item5">💉</div>
+<div class="floating-item item6">🧪</div>
 """, unsafe_allow_html=True)
 
 # =========================================================
