@@ -963,8 +963,7 @@ elif st.session_state.screen == "lab":
     data = cases[case]
 
     # --- 1. HEADER (Oben fixiert) ---
-    st.markdown('<div class="app-header">', unsafe_allow_html=True)
-    st.markdown('<div class="header-row"><div class="header-left">', unsafe_allow_html=True)
+    st.markdown('<div class="header-content">', unsafe_allow_html=True)
     if st.button("← Fallauswahl", key="back_to_lvl"):
         st.session_state.screen = "level"
         st.rerun()
@@ -986,6 +985,7 @@ elif st.session_state.screen == "lab":
         """, unsafe_allow_html=True)
 
     st.write("") # Kleiner Abstand
+    st.divider()
 
     # --- 3. REIHE: LABORSTATIONEN (Breit verteilt) ---
     st.write("### 🔬 Laborstationen")
