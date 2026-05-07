@@ -1301,7 +1301,7 @@ elif st.session_state.screen == "mikroskop":
     st.markdown(f"""
     <div class="microscope-box">
         <span class="big-emoji">🔬</span>
-        <h3>Mikroskopischer Eindruck</h3>
+        <h3>Interpretation</h3>
         <p>{microscope_info[case]["view"]}</p>
     </div>
     """, unsafe_allow_html=True)
