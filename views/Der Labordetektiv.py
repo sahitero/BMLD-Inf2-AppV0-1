@@ -41,7 +41,7 @@ h1, p, span, div {
     box-sizing: border-box;
 }
             
-/* Design für die Ergebnisse fo de Tests, z.Bsp. Mikroskopischer Eindruck, Agarplatten-Ergebnisse, Blutwerte */           
+/* Design für die Ergebnisse von den Tests, z.Bsp. Mikroskopischer Eindruck, Agarplatten-Ergebnisse, Blutwerte */           
 .result-card {
     background-color: #E6F7FF;
     padding: 15px;
@@ -610,51 +610,51 @@ lab_info = {
 }
 # Agar-Ergebnisse pro Fall (COS / MAC / CNA) und die Interpretation dieser Ergebnisse. Diese Informationen helfen den Spielern, die Ergebnisse der Agarplatten zu verstehen und die richtigen Schlüsse zu ziehen. Es ist wichtig, dass diese Informationen klar und verständlich formuliert sind, damit die Spieler sie leicht verstehen und in ihre Diagnosen einbeziehen können.
 micro_tests = {
-    "Fall 1": {"Gram": "Gram-positiv, Kokken in Haufen", "Katalase": "positiv", "Koagulase": "positiv", "Hämolyse": "β-Hämolyse möglich"},
-    "Fall 2": {"Gram": "Gram-positiv, Kokken in Ketten", "Katalase": "negativ", "Koagulase": "nicht sinnvoll", "Hämolyse": "β-Hämolyse"},
-    "Fall 3": {"Gram": "Gram-negativ, Stäbchen", "Katalase": "nicht zentral", "Koagulase": "nicht sinnvoll", "Hämolyse": "nicht zentral"},
-    "Fall 4": {"Gram": "Nicht sinnvoll", "Katalase": "nicht sinnvoll", "Koagulase": "nicht sinnvoll", "Hämolyse": "nicht sinnvoll"},
-    "Fall 5": {"Gram": "Gram-positiv", "Katalase": "negativ", "Koagulase": "negativ", "Hämolyse": "leichte Hämolyse"},
-    "Fall 6": {"Gram": "Nicht typisch / Pilzverdacht", "Katalase": "nicht primär", "Koagulase": "nicht primär", "Hämolyse": "nicht typisch"},
+    "Fall 1": {"Katalase": "positiv", "Koagulase": "positiv"},
+    "Fall 2": {"Katalase": "negativ", "Koagulase": "nicht sinnvoll"},
+    "Fall 3": {"Katalase": "nicht zentral", "Koagulase": "nicht sinnvoll"},
+    "Fall 4": {"Katalase": "nicht sinnvoll", "Koagulase": "nicht sinnvoll"},
+    "Fall 5": {"Katalase": "negativ", "Koagulase": "negativ"},
+    "Fall 6": {"Katalase": "nicht primär", "Koagulase": "nicht primär"},
 }
 # beschreibt die Mikroskopischen Eindrücke pro Fall, die angezeigt werden, wenn die Spieler die Mikroskop-Station öffnen. Es enthält auch den Pfad zu einem Bild, das den mikroskopischen Eindruck visualisiert. Diese Bilder sollten in einem Ordner "images" im selben Verzeichnis wie die App liegen.
 #Aufzeigen der Mikroskopischen Bildern
 microscope_info = {
     "Fall 1": {
-        "view": "Grampositive Kokken in Haufen. Das spricht eher für Staphylokokken.",
+        "view": "Grampositive Kokken in Haufen, spricht eher für Staphylokokken",
         "gram_type": "Gram-positiv",
         "image": "images/fall1_mikro.png",
-        "sample": "Probe: Eiter aus einer Hautabszess-Läsion."
+        "sample": "Probe: Eiter aus einer Hautabszess-Läsion"
     },
     "Fall 2": {
-        "view": "Grampositive Kokken in Ketten. Das spricht eher für Streptokokken.",
+        "view": "Grampositive Kokken in Ketten, spricht eher für Streptokokken",
         "gram_type": "Gram-positiv",
         "image": "images/fall2_mikro.png",
-        "sample": "Probe: Rachenabstrich."
+        "sample": "Probe: Rachenabstrich"
     },
     "Fall 3": {
-        "view": "Gramnegative Stäbchen sind sichtbar.",
+        "view": "Gramnegative Stäbchen sichtbar",
         "gram_type": "Gram-negativ",
         "image": "images/fall3_mikro.png",
-        "sample": "Probe: Mittelstrahlurin."
+        "sample": "Probe: Mittelstrahlurin"
     },
     "Fall 4": {
-        "view": "Auffälliges, strukturiertes Ei, passend zu einem Helminthen.",
+        "view": "Auffälliges, strukturiertes Ei, passend zu einem Helminthen",
         "gram_type": "Nicht sinnvoll",
         "image": "images/fall4_mikro.png",
-        "sample": "Probe: Stuhlprobe."
+        "sample": "Probe: Stuhlprobe"
     },
     "Fall 5": {
-        "view": "Grampositive Kokken erkennbar.",
+        "view": "Grampositive Kokken erkennbar",
         "gram_type": "Gram-positiv, aber unspezifisch",
         "image": "images/fall5_mikro.png",
-        "sample": "Probe: Liquor."
+        "sample": "Probe: Liquor"
     },
     "Fall 6": {
-        "view": "Sprosszellen und Hyphen, vereinbar mit einem Hefepilz.",
+        "view": "Sprosszellen und Hyphen, vereinbar mit einem Hefepilz",
         "gram_type": "Nicht typisch / Pilzverdacht",
         "image": "images/fall6_mikro.png",
-        "sample": "Probe: Vaginalabstrich."
+        "sample": "Probe: Vaginalabstrich"
     }
 }
 
@@ -748,13 +748,13 @@ agar_results = {
 # Mikroskopischer Eindruck + Gram-Ziel pro Fall
 gram_data = {
     "Fall 1": "Gram-positiv, Kokken in Haufen",
-    "Fall 2": "Gram-negativ, Stäbchen",
-    "Fall 3": "Gram-positiv, Ketten",
+    "Fall 2": "Gram-positiv, Kokken in Ketten",
+    "Fall 3": "Gram-negativ, Stäbchen",
     "Fall 4": "Keine Bakterien, aber auffällige Strukturen",
     "Fall 5": "Gram-positiv, Kokken",
     "Fall 6": "Pilzstrukturen sichtbar"
 }
-# Die Lösungen alles Fälle
+# Die Lösungen aller Fälle
 solutions = {
     "Fall 1": "Staphylococcus aureus",
     "Fall 2": "Streptococcus pyogenes",
@@ -803,13 +803,13 @@ def interpret_blood(diff: dict) -> list[str]:
     eos = float(diff.get("Eosinophile (%)", 0))
 
     if neut >= 70:
-        hints.append("Neutrophile ↑ → spricht eher für bakterielle Ursache (akut)")
+        hints.append("Neutrophile ↑ spricht eher für bakterielle Ursache (akut)")
     if lymph >= 45:
-        hints.append("Lymphozyten ↑ → spricht eher für virale Ursache")
+        hints.append("Lymphozyten ↑ spricht eher für virale Ursache")
     if eos >= 6:
-        hints.append("Eosinophile ↑ → spricht für Parasiten oder Allergie/ Überempfindlichkeit")
+        hints.append("Eosinophile ↑ spricht für Parasiten oder Allergie/ Überempfindlichkeit")
     if not hints:
-        hints.append("Differentialblutbild: kein klarer Hinweis → Kontext/ weitere Tests wichtig")
+        hints.append("Differentialblutbild: kein klarer Hinweis → weitere Tests wichtig")
     return hints
 
 def interpret_micro(mt: dict) -> list[str]:
@@ -927,7 +927,7 @@ if st.session_state.screen == "home":
             st.rerun()
 
 # -------------------------
-# LEVEL SCREEN, Hier sollte die Aufführung alles Fälle sein, damit die Spieler einen Fall auswählen können. Es sollte auch der aktuelle Score angezeigt werden.
+# LEVEL SCREEN, Hier sollte die Aufführung aller Fälle sein, damit die Spieler einen Fall auswählen können. Es sollte auch der aktuelle Score angezeigt werden.
 # -------------------------
 elif st.session_state.screen == "level":
     st.title("Fall auswählen")
@@ -981,7 +981,7 @@ elif st.session_state.screen == "lab":
     st.markdown('</div></div></div>', unsafe_allow_html=True)
 
     # --- 2. DROPDOWN FÜR DIE PATIENTENAKTE ---
-    # Hier werden die Patientendaten in einem süßen Dropdown angezeigt, damit die Spieler jederzeit auf die Informationen zugreifen können, ohne dass sie den Überblick verlieren. Die Informationen sollten klar und übersichtlich dargestellt werden, damit die Spieler sie leicht verstehen und in ihre Diagnosen einbeziehen können.
+    # Hier werden die Patientendaten in einem süssen Dropdown angezeigt, damit die Spieler jederzeit auf die Informationen zugreifen können, ohne dass sie den Überblick verlieren. Die Informationen sollten klar und übersichtlich dargestellt werden, damit die Spieler sie leicht verstehen und in ihre Diagnosen einbeziehen können.
     with st.expander(f"📖 Patientenakte von {data['name']} nachlesen", expanded=False):
         st.markdown(f"""
         <div class="cute-card">
@@ -1092,7 +1092,7 @@ elif st.session_state.screen == "agar":
         Um Bakterien zu identifizieren, lassen wir sie auf verschiedenen "Tellern" (Agarplatten) wachsen:
         
         *   **COS (Caspari-Agar / Schafblut):** Ein Universalmedium. Fast alles wächst hier. Besonders wichtig: Hier sieht man die **Hämolyse** (wie die Bakterien rote Blutkörperchen zerstören).
-        *   **MAC (MacConkey-Agar):** Ein Selektivmedium für **gramnegative Stäbchen** (z.B. Darmbakterien). Es zeigt auch, ob die Bakterien Zucker (Laktose) vergären können (rosa Färbung!).
+        *   **MAC (MacConkey-Agar):** Ein Selektivmedium für **gramnegative Bakterien** (z.B. Darmbakterien). Es zeigt auch, ob die Bakterien Zucker (Laktose) vergären können (gibt verschiedene Verfärbungen auf Agar!).
         *   **CNA (Colistin-Nalidixinsäure-Agar):** Ein Selektivmedium, auf dem fast nur **grampositive Bakterien** (wie Staphylokokken oder Streptokokken) wachsen.
         
         **Warum nutzen wir mehrere?** Wenn etwas auf CNA wächst, aber nicht auf MAC, wissen wir sofort: Es ist grampositiv!
@@ -1233,10 +1233,8 @@ elif st.session_state.screen == "agar":
         st.subheader("2️⃣ Mikrobiologische Schnelltests")
         st.markdown(f"""
         <div class="result-card">
-        <b>Gram:</b> {mt["Gram"]}<br>
         <b>Katalase:</b> {mt["Katalase"]}<br>
         <b>Koagulase:</b> {mt["Koagulase"]}<br>
-        <b>Hämolyse:</b> {mt["Hämolyse"]}
         </div>
         """, unsafe_allow_html=True)
 
@@ -1301,7 +1299,7 @@ elif st.session_state.screen == "mikroskop":
     st.markdown(f"""
     <div class="microscope-box">
         <span class="big-emoji">🔬</span>
-        <h3>Interpretation</h3>
+        <div style="font-weight: bold; margin-bottom: 5px;">Interpretation</div>
         <p>{microscope_info[case]["view"]}</p>
     </div>
     """, unsafe_allow_html=True)
