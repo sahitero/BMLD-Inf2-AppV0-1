@@ -1093,6 +1093,13 @@ elif st.session_state.screen == "agar":
     if st.button("← Zurück zum Labor", key=f"back_from_agar_{case}"):
         st.session_state.screen = "lab"
         st.rerun()
+  
+    st.markdown("""
+    <div class="screen-box">
+        <h1 style="text-align:center;">🧫 Kultur & Tests</h1>
+        <p style="text-align:center;">Wähle eine Agarplatte aus und kombiniere das Wachstum mit den mikrobiologischen Schnelltests.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
     # GLÜHBIRNE / HILFE SEKTION
     with st.expander("💡 Wissen: Was verraten uns diese Agarplatten?", expanded=False):
@@ -1106,13 +1113,6 @@ elif st.session_state.screen == "agar":
         
         **Warum nutzen wir mehrere?** Wenn etwas auf CNA wächst, aber nicht auf MAC, wissen wir sofort: Es ist grampositiv!
         """)
-  
-    st.markdown("""
-    <div class="screen-box">
-        <h1 style="text-align:center;">🧫 Kultur & Tests</h1>
-        <p style="text-align:center;">Wähle eine Agarplatte aus und kombiniere das Wachstum mit den mikrobiologischen Schnelltests.</p>
-    </div>
-    """, unsafe_allow_html=True)
 
 
     st.markdown("""
@@ -1121,7 +1121,7 @@ elif st.session_state.screen == "agar":
     </div>
     """, unsafe_allow_html=True)
 
-    st.subheader("1️⃣ Agarplatte auswählen")
+    st.subheader("Agarplatte auswählen")
 
     col1, col2, col3 = st.columns(3)
 
@@ -1239,7 +1239,7 @@ elif st.session_state.screen == "agar":
         st.image(image_path, use_container_width=True)
         st.info(text)
 
-        st.subheader("2️⃣ Mikrobiologische Schnelltests")
+        st.subheader("Mikrobiologische Schnelltests")
         st.markdown(f"""
         <div class="result-card">
         <b>Katalase:</b> {mt["Katalase"]}<br>
@@ -1247,7 +1247,8 @@ elif st.session_state.screen == "agar":
         </div>
         """, unsafe_allow_html=True)
 
-        st.subheader("3️⃣ Interpretation")
+        st.write("---")
+        st.subheader("🧠 Interpretation der Agarplatten")
         for h in interpret_micro(mt):
             st.markdown(f"""<div class="hint-card">{h}</div>""", unsafe_allow_html=True)
 
@@ -1289,6 +1290,14 @@ elif st.session_state.screen == "mikroskop":
         st.session_state.screen = "lab"
         st.rerun()
 
+    st.markdown("""
+    <div class="screen-box">
+        <h1 style="text-align:center;">🔬 Mikroskop</h1>
+        <p style="text-align:center;">Beobachte die Probe und führe danach die Gram-Färbung durch.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+
     # GLÜHBIRNE / HILFE SEKTION
     with st.expander("💡 Wissen: Warum färben wir Bakterien?", expanded=False):
         st.markdown("""
@@ -1300,21 +1309,6 @@ elif st.session_state.screen == "mikroskop":
         
         **Formen:** Wir achten auch auf die Form (**Kokken** = Kügelchen, **Stäbchen**) und die Anordnung (**Haufen** wie Weintrauben oder **Ketten**).
         """)
-
-    st.markdown("""
-    <div class="screen-box">
-        <h1 style="text-align:center;">🔬 Mikroskop</h1>
-        <p style="text-align:center;">Beobachte die Probe und führe danach die Gram-Färbung durch.</p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown(f"""
-    <div class="microscope-box">
-        <span class="big-emoji">🔬</span>
-        <div style="font-weight: bold; margin-bottom: 5px;">Interpretation</div>
-        <p>{microscope_info[case]["view"]}</p>
-    </div>
-    """, unsafe_allow_html=True)
 
     st.subheader("🎮 Gram-Färbung Mini-Spiel")
     st.write("Wähle die Schritte in der richtigen Reihenfolge:")
@@ -1414,6 +1408,12 @@ elif st.session_state.screen == "mikroskop":
         🔬 Führe zuerst die Gram-Färbung korrekt durch, damit das Präparat sichtbar wird.
         </div>
         """, unsafe_allow_html=True)
+
+    st.write("---")
+
+    st.subheader("🧠 Interpretation des Mikroskops")
+
+    st.write(microscope_info[case]["view"])
 
     st.write("---")
 
@@ -1585,6 +1585,7 @@ elif st.session_state.screen == "blutbild":
                 st.markdown("""<div class="hint-card">🧠 PCT erhöht → Hinweis auf bakterielle Infektion möglich.</div>""", unsafe_allow_html=True)
             if "Leukos" in values and values["Leukos"] > 10:
                 st.markdown("""<div class="hint-card">🧠 Leukozyten erhöht → passt zu einer Entzündungsreaktion.</div>""", unsafe_allow_html=True)
+        st.write("---")
 
         if st.session_state.chem_done and st.session_state.hema_done:
             st.markdown("""
