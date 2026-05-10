@@ -1130,7 +1130,17 @@ elif st.session_state.screen == "level":
                 st.session_state.feedback = None
                 st.session_state.selected_plate = None
 
+                # Gram-Spiel zurücksetzen
                 reset_gram_game()
+                st.session_state.gram_done = False
+
+                # Blutanalyse zurücksetzen
+                st.session_state.blood_started = False
+                st.session_state.blood_done = False
+                st.session_state.blood_loaded = False
+                st.session_state.hema_done = False
+                st.session_state.chem_done = False
+                
                 st.rerun()
 
     if st.button("🔙 Zurück zum Home", key="back_level"):
